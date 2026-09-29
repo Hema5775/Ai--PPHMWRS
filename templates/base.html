@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Vitalis AI — Health Monitoring & Wellness{% endblock %}</title>
+  <meta name="description" content="AI-Powered Personalized Health Monitoring and Wellness Recommendation System. Track activities, receive ML recommendations, and visualize health trends.">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <!-- Chart.js for visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Navigation Header -->
+  <nav class="navbar" id="main-nav">
+    <div class="nav-container">
+      <a href="{{ url_for('dashboard.index') if g.user else url_for('auth.login') }}" class="brand-logo" id="brand-logo-link">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <span>Vitalis<span style="color: var(--accent-teal);">AI</span></span>
+      </a>
+
+      {% if g.user %}
+      <ul class="nav-links" id="nav-menu">
+        <li><a href="{{ url_for('dashboard.index') }}" class="nav-link {% if request.endpoint == 'dashboard.index' %}active{% endif %}" id="nav-dashboard">Dashboard</a></li>
+        <li><a href="{{ url_for('activity.index') }}" class="nav-link {% if request.endpoint == 'activity.index' %}active{% endif %}" id="nav-activity">Activity</a></li>
+        <li><a href="{{ url_for('recommendations.index') }}" class="nav-link {% if request.endpoint == 'recommendations.index' %}active{% endif %}" id="nav-recommendations">Recommendations</a></li>
+        <li><a href="{{ url_for('progress.index') }}" class="nav-link {% if request.endpoint == 'progress.index' %}active{% endif %}" id="nav-progress">Progress</a></li>
+        <li><a href="{{ url_for('weekly_report.index') }}" class="nav-link {% if request.endpoint == 'weekly_report.index' %}active{% endif %}" id="nav-weekly-report">Weekly Report</a></li>
+        <li><a href="{{ url_for('dashboard.how_it_works') }}" class="nav-link {% if request.endpoint == 'dashboard.how_it_works' %}active{% endif %}" id="nav-how-it-works">How It Works</a></li>
+        {% if g.user.is_admin() %}
+        <li><a href="{{ url_for('admin.index') }}" class="nav-link {% if request.endpoint and 'admin.' in request.endpoint %}active{% endif %}" style="color: var(--accent-purple);" id="nav-admin">Admin ML</a></li>
+        {% endif %}
+      </ul>
+
+      <div class="nav-actions">
+        <a href="{{ url_for('profile.index') }}" 
+           class="user-badge {% if request.endpoint == 'profile.index' %}active{% endif %}" 
+           id="current-user-badge" 
+           title="View &amp; Edit Profile" 
+           aria-label="View user profile for {{ g.user.name }}">
+          <div class="user-avatar">{{ g.user.name[:1].upper() }}</div>
+          <span>{{ g.user.name.split(' ')[0] }}</span>
+        </a>
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary btn-sm" id="btn-logout" title="Log Out">Log Out</a>
+      </div>
+      {% else %}
+      <div class="nav-actions">
+        <a href="{{ url_for('auth.login') }}" class="btn btn-secondary btn-sm" id="btn-nav-login">Sign In</a>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm" id="btn-nav-register">Get Started</a>
+      </div>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- Flash Messages -->
+  <main class="main-content" id="main-content-area">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container" id="flash-container">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category if category != 'message' else 'info' }}">
+              <span>{{ message }}</span>
+              <button type="button" onclick="this.parentElement.remove()" style="background:none; border:none; color:inherit; cursor:pointer; font-size:1.1rem; line-height:1;">&times;</button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% if error_message %}
+      <div class="alert alert-danger" id="global-error-banner">
+        <div>
+          <strong>System Notice:</strong> {{ error_message }}
+          {% if error_id %}
+            <div style="font-size: 0.8rem; margin-top: 0.25rem; opacity: 0.8;">Incident Reference: <code>{{ error_id }}</code></div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Universal Health & Safety Disclaimer Footer -->
+  {% if request.endpoint != 'dashboard.how_it_works' %}
+  <footer class="disclaimer-banner" id="site-footer">
+    <div style="max-width: 1000px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 0.6rem;">
+        <a href="{{ url_for('dashboard.how_it_works') }}" style="color: var(--accent-cyan); font-size: 0.85rem; font-weight: 500;">Learn How Vitalis AI Works &rarr;</a>
+      </div>
+      <p style="margin-bottom: 0.3rem;">
+        <strong>Safety & Clinical Disclaimer:</strong> Vitalis AI is a personal health monitoring and lifestyle habit optimization platform.
+        It does not diagnose medical conditions, prescribe drugs, or substitute for professional medical advice, clinical diagnosis, or medical treatment.
+      </p>
+      <p style="color: var(--text-muted); font-size: 0.75rem;">
+        If you are experiencing acute medical symptoms, severe distress, or chest pain, please consult a licensed healthcare professional or contact emergency services immediately.
+      </p>
+    </div>
+  </footer>
+  {% endif %}
+
+  <!-- Global AI Health Companion Floating Launcher & Panel -->
+  {% include "components/companion.html" %}
+
+  <!-- Global Vitalis Minimal Loading Overlay (Short white pulse on transparent background) -->
+  <div id="vitalis-global-overlay" class="vitalis-loader-overlay" aria-hidden="true" role="status" aria-label="Loading">
+    <svg class="vitalis-loader-svg vitalis-loader-lg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path class="vitalis-loading-pulse" d="M2 12h4l3-9 6 18 3-9h4" pathLength="100"/>
+    </svg>
+  </div>
+
+  {% if g.user %}
+  <script src="{{ url_for('static', filename='js/three.min.js') }}"></script>
+  {% endif %}
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

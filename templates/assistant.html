@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}AI Wellness Assistant — Vitalis AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2>Personal AI Wellness Assistant</h2>
+      <p style="color: var(--text-secondary); font-size: 0.92rem;">
+        Grounded strictly in your logged database history, current wellness score, and personal goals.
+      </p>
+    </div>
+    <span class="badge badge-healthy">Grounded Telemetry</span>
+  </div>
+
+  <div class="card chat-container" id="assistant-chat-card">
+    <!-- Chat Header -->
+    <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <div class="brand-icon" style="width: 28px; height: 28px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div>
+          <strong style="color: #fff; font-size: 0.92rem;">Vitalis Copilot</strong>
+          <span style="font-size: 0.75rem; color: var(--accent-teal); display: block;">Active &bull; Non-Clinical Wellness AI</span>
+        </div>
+      </div>
+      <span style="font-size: 0.75rem; color: var(--text-muted);">Database Grounded</span>
+    </div>
+
+    <!-- Chat Messages Stream -->
+    <div class="chat-messages" id="chat-messages-container">
+      <div class="chat-bubble chat-assistant">
+        Hello {{ user.name.split(' ')[0] }}! I am your personal wellness companion. I can answer questions about your logged activities, why your wellness score moved, or what habits to focus on today. How can I help you today?
+      </div>
+    </div>
+
+    <!-- Quick Question Chips -->
+    <div style="padding: 0.6rem 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.2);">
+      <button type="button" class="btn btn-secondary btn-sm" onclick="sendQuickPrompt('Why did my score fall?')" style="font-size: 0.78rem;">Why did my score change?</button>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="sendQuickPrompt('What should I focus on today?')" style="font-size: 0.78rem;">What should I focus on today?</button>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="sendQuickPrompt('What was my average sleep this week?')" style="font-size: 0.78rem;">Average sleep this week?</button>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="sendQuickPrompt('What is my dietary plan?')" style="font-size: 0.78rem;">My diet guidance</button>
+    </div>
+
+    <!-- Input Bar -->
+    <form id="chat-form" class="chat-input-bar" onsubmit="handleChatSubmit(event)">
+      <input type="text" id="chat-input" class="form-control" placeholder="Ask about your wellness score, activities, or today's priorities..." autocomplete="off" required>
+      <button type="submit" class="btn btn-primary" id="btn-send-chat">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+async function handleChatSubmit(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  appendMessage(msg, 'user');
+  input.value = '';
+  input.disabled = true;
+
+  const sendBtn = document.getElementById('btn-send-chat');
+  if (window.VitalisLoader) {
+    VitalisLoader.setButtonLoading(sendBtn, true);
+  }
+
+  // Loading indicator bubble (minimal white pulse stroke on transparent background)
+  const loadingBubble = appendMessage('', 'assistant');
+  loadingBubble.innerHTML = window.VitalisLoader 
+    ? VitalisLoader.inlineHtml('vitalis-loader-sm')
+    : '...';
+
+  try {
+    const res = await fetch('/api/assistant/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg })
+    });
+    const data = await res.json();
+    loadingBubble.innerHTML = `
+      <div>${data.reply}</div>
+      ${data.disclaimer ? `<div style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.35rem;">${data.disclaimer}</div>` : ''}
+    `;
+  } catch (err) {
+    loadingBubble.textContent = "I encountered a network issue while retrieving your records. Please try again.";
+  } finally {
+    if (window.VitalisLoader) {
+      VitalisLoader.setButtonLoading(sendBtn, false);
+    }
+    input.disabled = false;
+    input.focus();
+  }
+}
+
+function sendQuickPrompt(promptText) {
+  document.getElementById('chat-input').value = promptText;
+  handleChatSubmit(null);
+}
+
+function appendMessage(text, sender) {
+  const container = document.getElementById('chat-messages-container');
+  const bubble = document.createElement('div');
+  bubble.className = `chat-bubble chat-${sender}`;
+  bubble.textContent = text;
+  container.appendChild(bubble);
+  container.scrollTop = container.scrollHeight;
+  return bubble;
+}
+</script>
+{% endblock %}

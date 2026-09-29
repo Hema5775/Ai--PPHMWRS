@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account — Vitalis AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 720px; margin: 2rem auto;">
+  <div class="card" id="register-card">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h2>Create Your Wellness Profile</h2>
+      <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 0.3rem;">
+        Vitalis AI uses your biometrics and lifestyle parameters to customize machine learning recommendations.
+      </p>
+    </div>
+
+    <!-- Social Login Providers: Google & Apple -->
+    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+      <a href="{{ url_for('auth.google_login') }}" class="btn-social-auth" id="btn-register-google">
+        <svg width="18" height="18" viewBox="0 0 24 24" style="flex-shrink: 0;">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span>Continue with Google</span>
+      </a>
+
+      <a href="{{ url_for('auth.apple_login') }}" class="btn-social-auth" id="btn-register-apple">
+        <svg width="18" height="18" viewBox="0 0 170 170" fill="#ffffff" style="flex-shrink: 0;">
+          <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.58-7.7-11.64-13.98-6.19-9.56-10.97-20.55-14.35-32.96-3.37-12.42-5.06-23.77-5.06-34.05 0-14.89 3.65-27.18 10.95-36.87 7.3-9.69 16.48-14.63 27.54-14.83 5.43 0 11.19 1.41 17.28 4.23 6.08 2.83 10.15 4.35 12.21 4.56 2.07-.21 6.36-1.78 12.89-4.71 6.52-2.93 12.01-4.29 16.47-4.07 12.4.65 22.38 5.16 29.93 13.53-10.87 6.63-16.19 15.66-15.98 27.07.22 8.91 3.64 16.36 10.27 22.34 6.63 5.98 14.56 9.4 23.8 10.27-2.61 7.6-5.87 15.33-9.78 23.18zM119.22 33.15c0-6.96 2.5-13.43 7.5-19.41 5-5.98 11.25-9.67 18.75-11.09.22 1.09.33 2.18.33 3.26 0 6.85-2.66 13.48-7.99 19.89-5.33 6.41-11.63 10.16-18.91 11.25-.1-.98-.2-2.31-.29-3.9z"/>
+        </svg>
+        <span>Continue with Apple</span>
+      </a>
+    </div>
+
+    <div style="display: flex; align-items: center; margin-bottom: 1.5rem; color: var(--text-muted); font-size: 0.8rem;">
+      <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+      <span style="padding: 0 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">or register with email</span>
+      <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+    </div>
+
+    <form method="POST" action="{{ url_for('auth.register') }}" id="register-form">
+      <!-- Section 1: Account -->
+      <h4 style="color: var(--accent-cyan); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem;">
+        1. Account Credentials
+      </h4>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="reg-name">Full Name</label>
+          <input type="text" name="name" id="reg-name" class="form-control" placeholder="Jane Doe" value="{{ form.name or '' }}" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Email Address</label>
+          <input type="email" name="email" id="reg-email" class="form-control" placeholder="jane@example.com" value="{{ form.email or '' }}" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="reg-password">Password (Minimum 8 characters)</label>
+        <input type="password" name="password" id="reg-password" class="form-control" placeholder="••••••••" minlength="8" required>
+      </div>
+
+      <!-- Section 2: Biometrics -->
+      <h4 style="color: var(--accent-teal); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.5rem 0 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem;">
+        2. Physiological Biometrics
+      </h4>
+      <div class="grid-4">
+        <div class="form-group">
+          <label class="form-label" for="reg-age">Age</label>
+          <input type="number" name="age" id="reg-age" class="form-control" min="13" max="120" value="{{ form.age or 28 }}" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-gender">Gender</label>
+          <select name="gender" id="reg-gender" class="form-select">
+            <option value="female" {% if form.gender == 'female' %}selected{% endif %}>Female</option>
+            <option value="male" {% if form.gender == 'male' %}selected{% endif %}>Male</option>
+            <option value="other" {% if form.gender == 'other' %}selected{% endif %}>Other / Prefer not to say</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-height">Height (cm)</label>
+          <input type="number" step="0.1" name="height_cm" id="reg-height" class="form-control" min="100" max="250" value="{{ form.height_cm or 168.0 }}" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-weight">Weight (kg)</label>
+          <input type="number" step="0.1" name="weight_kg" id="reg-weight" class="form-control" min="30" max="300" value="{{ form.weight_kg or 65.0 }}" required>
+        </div>
+      </div>
+
+      <!-- Section 3: Lifestyle & Goals -->
+      <h4 style="color: var(--accent-indigo); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.5rem 0 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem;">
+        3. Lifestyle & Wellness Objectives
+      </h4>
+      <div class="grid-3">
+        <div class="form-group">
+          <label class="form-label" for="reg-activity-level">Daily Activity Level</label>
+          <select name="activity_level" id="reg-activity-level" class="form-select">
+            <option value="sedentary">Sedentary (desk job, minimal movement)</option>
+            <option value="lightly_active">Lightly Active (1-3 days light exercise)</option>
+            <option value="moderately_active" selected>Moderately Active (3-5 days exercise)</option>
+            <option value="very_active">Very Active (6-7 days vigorous exercise)</option>
+            <option value="extra_active">Extra Active (intense athlete / physical work)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-diet">Dietary Preference</label>
+          <select name="dietary_preference" id="reg-diet" class="form-select">
+            <option value="balanced" selected>Balanced Whole-Foods</option>
+            <option value="mediterranean">Mediterranean Diet</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="vegan">Vegan / 100% Plant-Based</option>
+            <option value="low_carb">Low-Carb</option>
+            <option value="keto">Ketogenic</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-goal">Primary Wellness Goal</label>
+          <select name="health_goal" id="reg-goal" class="form-select">
+            <option value="weight_loss">Weight Management / Fat Loss</option>
+            <option value="muscle_gain">Muscle Building & Tone</option>
+            <option value="cardio_endurance">Cardiovascular Endurance</option>
+            <option value="maintenance" selected>General Vitality & Maintenance</option>
+            <option value="healthy_sleep">Restorative Sleep Optimization</option>
+            <option value="stress_reduction">Stress & Nervous System Recovery</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Section 4: Safety & Constraints -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="reg-limitations">Physical Limitations / Sensitivities</label>
+          <input type="text" name="physical_limitations" id="reg-limitations" class="form-control" placeholder="e.g. knee_pain, back_pain, asthma (or 'none')" value="{{ form.physical_limitations or 'none' }}">
+          <span style="font-size: 0.75rem; color: var(--text-muted);">High-impact exercises conflicting with limitations are automatically filtered out.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-allergies">Food Allergies / Intolerances</label>
+          <input type="text" name="allergies" id="reg-allergies" class="form-control" placeholder="e.g. peanuts, dairy, gluten (or none)" value="{{ form.allergies or '' }}">
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Meal plan suggestions automatically filter out declared allergens.</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 0.85rem;" id="btn-submit-register">Establish Profile & Launch Companion</button>
+    </form>
+
+    <p style="text-align: center; margin-top: 1.5rem; font-size: 0.88rem; color: var(--text-secondary);">
+      Already have an account? <a href="{{ url_for('auth.login') }}" style="font-weight: 600;">Sign in here</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

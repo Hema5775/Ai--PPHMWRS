@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Admin ML Operations — Vitalis AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <h2>Machine Learning & System Operations</h2>
+        <span class="badge badge-warning" style="font-size: 0.75rem;">Admin Cockpit</span>
+      </div>
+      <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 0.2rem;">
+        Monitor model lifecycle, automated 11-step health checks, data drift, and centralized error diagnostics.
+      </p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="display: flex; gap: 0.75rem;">
+      <a href="{{ url_for('admin.model_health') }}" class="btn btn-secondary btn-sm" id="btn-admin-health-check">Run ML Health Audit</a>
+      <form method="POST" action="{{ url_for('admin.retrain') }}" onsubmit="return confirm('Trigger offline model retraining pipeline on fresh data?');">
+        <button type="submit" class="btn btn-primary btn-sm" id="btn-admin-retrain">Trigger Retraining</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Navigation Tabs -->
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+    <a href="{{ url_for('admin.index') }}" class="btn btn-sm btn-primary">Overview</a>
+    <a href="{{ url_for('admin.models') }}" class="btn btn-sm btn-secondary">Model Registry</a>
+    <a href="{{ url_for('admin.model_health') }}" class="btn btn-sm btn-secondary">11-Step ML Health</a>
+    <a href="{{ url_for('admin.errors') }}" class="btn btn-sm btn-secondary">Bug Diagnostics ({{ error_count }})</a>
+    <a href="{{ url_for('admin.system_health') }}" class="btn btn-sm btn-secondary">System Health</a>
+  </div>
+
+  <!-- Operational Telemetry Cards -->
+  <div class="grid-4" style="margin-bottom: 2rem;">
+    <div class="card" style="padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Active Production Model</span>
+      <div style="font-family: var(--font-heading); font-size: 1.35rem; font-weight: 800; color: #fff; margin-top: 0.2rem;">
+        {{ active_meta.algorithm if active_meta else 'HistGradientBoosting' }}
+      </div>
+      <div style="font-size: 0.8rem; color: var(--accent-teal); margin-top: 0.25rem;">
+        Version: {{ active_meta.version if active_meta else 'v1.0.0' }}
+      </div>
+    </div>
+
+    <div class="card" style="padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Model Health Status</span>
+      <div style="margin-top: 0.5rem;">
+        <span class="badge {% if health_status == 'HEALTHY' %}badge-healthy{% elif health_status == 'WARNING' %}badge-warning{% else %}badge-danger{% endif %}" style="font-size: 1rem; padding: 0.35rem 0.85rem;">
+          {{ health_status }}
+        </span>
+      </div>
+    </div>
+
+    <div class="card" style="padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Registered Users</span>
+      <div style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: #fff; margin-top: 0.2rem;">
+        {{ user_count }}
+      </div>
+      <div style="font-size: 0.8rem; color: var(--text-muted);">{{ activity_count }} activity logs</div>
+    </div>
+
+    <div class="card" style="padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Open System Incidents</span>
+      <div style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: {% if error_count > 0 %}var(--accent-rose){% else %}var(--accent-teal){% endif %}; margin-top: 0.2rem;">
+        {{ error_count }}
+      </div>
+      <div style="font-size: 0.8rem; color: var(--text-muted);">Self-diagnostics active</div>
+    </div>
+  </div>
+
+  <!-- Active Model Performance Overview -->
+  {% if active_meta and active_meta.metrics %}
+  <div class="card" style="margin-bottom: 2rem;">
+    <div class="card-header">
+      <span class="card-title">Active Model Empirically Measured Metrics</span>
+      <span class="badge badge-healthy">Validated Offline</span>
+    </div>
+    <div class="grid-4" style="text-align: center;">
+      <div style="background: rgba(255,255,255,0.02); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Test Accuracy</span>
+        <div style="font-size: 1.6rem; font-weight: 800; color: #fff; font-family: var(--font-heading);">
+          {{ (active_meta.metrics.accuracy * 100)|round(1) }}%
+        </div>
+      </div>
+      <div style="background: rgba(255,255,255,0.02); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">F1-Score (Macro)</span>
+        <div style="font-size: 1.6rem; font-weight: 800; color: var(--accent-teal); font-family: var(--font-heading);">
+          {{ active_meta.metrics.f1_macro }}
+        </div>
+      </div>
+      <div style="background: rgba(255,255,255,0.02); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Precision (Macro)</span>
+        <div style="font-size: 1.6rem; font-weight: 800; color: #fff; font-family: var(--font-heading);">
+          {{ active_meta.metrics.precision_macro }}
+        </div>
+      </div>
+      <div style="background: rgba(255,255,255,0.02); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">5-Fold Cross-Val F1</span>
+        <div style="font-size: 1.6rem; font-weight: 800; color: var(--accent-cyan); font-family: var(--font-heading);">
+          {{ active_meta.metrics.cv_f1_macro_mean or active_meta.metrics.f1_macro }}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Recent System Errors & Audits -->
+  <div class="grid-2">
+    <!-- Errors Card -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Recent System Diagnostics</span>
+        <a href="{{ url_for('admin.errors') }}" class="btn btn-secondary btn-sm">View All &rarr;</a>
+      </div>
+      {% if recent_errors %}
+        <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+          {% for err in recent_errors %}
+            <div style="background: rgba(244, 63, 94, 0.05); border: 1px solid rgba(244, 63, 94, 0.2); padding: 0.6rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.82rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem;">
+                <code style="color: var(--accent-rose); font-weight: bold;">{{ err.error_id }}</code>
+                <span style="color: var(--text-muted);">{{ err.timestamp.strftime('%H:%M:%S') }}</span>
+              </div>
+              <div style="color: #fff; font-weight: 500;">{{ err.module }} &bull; {{ err.category }}</div>
+              <div style="color: var(--text-muted); margin-top: 0.2rem;">{{ err.message[:80] }}...</div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p style="color: var(--accent-teal); font-size: 0.9rem;">✓ No active system errors recorded. System functioning smoothly.</p>
+      {% endif %}
+    </div>
+
+    <!-- Audits Card -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Recent Audit Events</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+        {% for a in recent_audits %}
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 0.6rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.82rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span class="badge badge-info" style="font-size: 0.7rem;">{{ a.action }}</span>
+              <span style="color: var(--text-muted); margin-left: 0.4rem;">IP: {{ a.ip_address }}</span>
+            </div>
+            <span style="color: var(--text-muted);">{{ a.timestamp.strftime('%H:%M:%S') }}</span>
+          </div>
+        {% else %}
+          <p style="color: var(--text-muted); font-size: 0.9rem;">No audit events recorded yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

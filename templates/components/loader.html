@@ -1,0 +1,10 @@
+{#
+  Minimal Vitalis AI Loading Component
+  - Short white pulse stroke on transparent background
+  - Available sizes: 'sm' (26x18), 'lg' (54x36), or default '' (36x24)
+#}
+{% macro vitalis_loader(size='', extra_class='') %}
+<svg class="vitalis-loader-svg {{ 'vitalis-loader-' ~ size if size else '' }} {{ extra_class }}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="status" aria-label="Loading">
+  <path class="vitalis-loading-pulse" d="M2 12h4l3-9 6 18 3-9h4" pathLength="100"/>
+</svg>
+{% endmacro %}

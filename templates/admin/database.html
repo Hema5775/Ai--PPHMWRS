@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Database Explorer — Vitalis AI Admin{% endblock %}
+
+{% block content %}
+<div style="max-width: 1400px; margin: 0 auto;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2>Database Administration & Visibility</h2>
+      <p style="color: var(--text-secondary); font-size: 0.92rem;">
+        Direct inspection of all 10 core tables in the relational architecture.
+      </p>
+    </div>
+    <div style="display: flex; gap: 0.5rem;">
+      <a href="{{ url_for('admin.index') }}" class="btn btn-secondary btn-sm">&larr; Admin Overview</a>
+      <a href="{{ url_for('admin.models') }}" class="btn btn-secondary btn-sm">ML Models</a>
+      <a href="{{ url_for('admin.errors') }}" class="btn btn-secondary btn-sm">System Errors</a>
+    </div>
+  </div>
+
+  <!-- 10 Tables Grid Pills -->
+  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.75rem;">
+    {% for tbl, cnt in counts.items() %}
+      <a href="{{ url_for('admin.database', table=tbl) }}" class="btn btn-sm {% if tbl == selected_table %}btn-primary{% else %}btn-secondary{% endif %}" style="display: flex; align-items: center; gap: 0.5rem;">
+        <span>{{ tbl }}</span>
+        <span class="badge {% if tbl == selected_table %}badge-healthy{% else %}badge-info{% endif %}" style="padding: 0.15rem 0.45rem; font-size: 0.75rem;">{{ cnt }}</span>
+      </a>
+    {% endfor %}
+  </div>
+
+  <!-- Table View Card -->
+  <div class="card" id="db-table-card">
+    <div class="card-header">
+      <span class="card-title" style="text-transform: capitalize;">
+        Table: <code>{{ selected_table }}</code> (Showing latest {{ records|length }} records)
+      </span>
+      <span class="badge badge-info">Total in DB: {{ counts[selected_table] }}</span>
+    </div>
+
+    {% if records %}
+      <div class="table-responsive" style="max-height: 550px; overflow-y: auto;">
+        <table class="table" style="font-size: 0.84rem;">
+          <thead>
+            <tr>
+              {% for col in columns %}
+                <th>{{ col }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in records %}
+              <tr>
+                {% for col in columns %}
+                  <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    {% if r[col] is mapping or r[col] is sequence and r[col] is not string %}
+                      <code style="font-size: 0.75rem;">{{ r[col]|tojson }}</code>
+                    {% else %}
+                      {{ r[col] }}
+                    {% endif %}
+                  </td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p style="color: var(--text-muted); font-size: 0.9rem; padding: 2rem; text-align: center;">
+        Table <code>{{ selected_table }}</code> has no records stored yet.
+      </p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

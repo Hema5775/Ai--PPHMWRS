@@ -1,0 +1,404 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Vitalis AI{% endblock %}
+
+{% block content %}
+<!-- Welcome Header & Quick Action -->
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1 style="font-size: 1.85rem; font-weight: 800;">Welcome back, {{ user.name.split(' ')[0] }}</h1>
+    <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 0.2rem;">
+      {{ today.strftime('%A, %B %d, %Y') }} &bull; Personalized Wellness & Health Cockpit
+    </p>
+  </div>
+  <div style="display: flex; align-items: center; gap: 0.8rem;">
+    <a href="{{ url_for('activity.index') }}" class="btn btn-primary btn-sm" id="btn-quick-log">
+      {% if has_today_activity %}Update Today's Activity{% else %}+ Log Today's Activity{% endif %}
+    </a>
+  </div>
+</div>
+
+<!-- 1. WELLNESS SCORE (Top Priority Hierarchy) -->
+<div class="card" id="wellness-score-card" style="margin-bottom: 1.75rem;">
+  <div class="card-header">
+    <span class="card-title">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Wellness Score
+    </span>
+    <span class="badge badge-info" style="text-transform: none;">Behavioral Index</span>
+  </div>
+
+  {% if total_activity_count == 0 and not has_today_activity %}
+    <!-- Empty Data Experience for Brand New User (Requirement 11) -->
+    <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; padding: 1.25rem 0.5rem;">
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(6, 182, 212, 0.1); border: 2px dashed var(--accent-cyan); display: flex; align-items: center; justify-content: center; color: var(--accent-cyan); font-size: 1.4rem; font-weight: 700;">
+        --
+      </div>
+      <div style="flex: 1; min-width: 260px;">
+        <h3 style="font-size: 1.2rem; color: #fff; margin-bottom: 0.35rem;">Not enough data yet</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 0.75rem;">
+          Start logging your daily activity to generate your personalized wellness score. Your score evaluates 5 dimensions: Activity, Hydration, Sleep, Tasks, and Consistency.
+        </p>
+        <a href="{{ url_for('activity.index') }}" class="btn btn-primary btn-sm">Log Your First Day</a>
+      </div>
+    </div>
+  {% else %}
+    <div class="score-display-card" style="margin-bottom: 1.25rem;">
+      <div class="score-circle" style="--score-pct: {{ score.total_score if score else 0 }};">
+        <div class="score-circle-inner">
+          <div class="score-number">{{ score.total_score|int if score else '--' }}</div>
+          <div class="score-label">/ 100</div>
+        </div>
+      </div>
+
+      <div style="flex: 1;">
+        <h3 style="font-size: 1.2rem; margin-bottom: 0.3rem;">
+          {% if score %}
+            {% if score.total_score >= 80 %}Optimal Behavioral Momentum
+            {% elif score.total_score >= 60 %}Solid Daily Consistency
+            {% else %}Building Baseline Habit Momentum{% endif %}
+          {% else %}Awaiting Today's Activity Log{% endif %}
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">
+          {% if has_today_activity %}
+            Calculated from 5 behavioral dimensions: Activity (25%), Hydration (20%), Sleep (20%), Tasks (20%), and Consistency (15%).
+          {% else %}
+            You haven't logged today's metrics yet. Previous days' consistency remains reflected in your baseline.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <!-- Dimension Subscores -->
+    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+      <div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Activity</div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: #fff;">{{ score.activity_score|int if score else '--' }}</div>
+      </div>
+      <div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Hydration</div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: #fff;">{{ score.hydration_score|int if score else '--' }}</div>
+      </div>
+      <div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Sleep</div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: #fff;">{{ score.sleep_score|int if score else '--' }}</div>
+      </div>
+      <div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Tasks</div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: #fff;">{{ score.task_score|int if score else '--' }}</div>
+      </div>
+      <div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Consistency</div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: #fff;">{{ score.consistency_score|int if score else '--' }}</div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<!-- 2. TODAY'S KEY WELLNESS METRICS -->
+<div class="grid-4" style="margin-bottom: 1.75rem;">
+  <!-- Steps -->
+  <div class="metric-card" id="metric-steps-card">
+    <div class="metric-header">
+      <span>Daily Movement</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    </div>
+    {% if has_today_activity %}
+      <div class="metric-value">{{ activity.steps|format_number }} <span style="font-size: 1rem; font-weight: 500;">steps</span></div>
+      {% set target_s = profile.target_steps if profile else 8000 %}
+      {% set steps_pct = ((activity.steps / target_s) * 100)|int %}
+      <div class="metric-sub">Target: {{ target_s|format_number }} ({{ steps_pct }}%)</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill bg-teal" style="width: {{ [steps_pct, 100]|min }}%;"></div>
+      </div>
+    {% else %}
+      <div class="metric-value" style="color: var(--text-muted);">-- <span style="font-size: 0.95rem; font-weight: 400;">steps</span></div>
+      {% set target_s = profile.target_steps if profile else 8000 %}
+      <div class="metric-sub">Target: {{ target_s|format_number }} &bull; <span style="color: var(--accent-cyan);">Awaiting today's log</span></div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill bg-teal" style="width: 0%;"></div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Hydration -->
+  <div class="metric-card" id="metric-water-card">
+    <div class="metric-header">
+      <span>Hydration</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+    </div>
+    {% if has_today_activity %}
+      <div class="metric-value">{{ activity.water_liters|format_decimal(1) }} <span style="font-size: 1rem; font-weight: 500;">L</span></div>
+      {% set target_w = profile.target_water_liters if profile else 2.5 %}
+      {% set water_pct = ((activity.water_liters / target_w) * 100)|int %}
+      <div class="metric-sub">Target: {{ target_w|format_decimal(1) }} L ({{ water_pct }}%)</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill bg-cyan" style="width: {{ [water_pct, 100]|min }}%;"></div>
+      </div>
+    {% else %}
+      <div class="metric-value" style="color: var(--text-muted);">-- <span style="font-size: 0.95rem; font-weight: 400;">L</span></div>
+      {% set target_w = profile.target_water_liters if profile else 2.5 %}
+      <div class="metric-sub">Target: {{ target_w|format_decimal(1) }} L &bull; <span style="color: var(--accent-cyan);">Awaiting today's log</span></div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill bg-cyan" style="width: 0%;"></div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Sleep -->
+  <div class="metric-card" id="metric-sleep-card">
+    <div class="metric-header">
+      <span>Sleep Rest</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-indigo)" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </div>
+    {% if has_today_activity %}
+      <div class="metric-value">{{ activity.sleep_hours|format_decimal(1) }} <span style="font-size: 1rem; font-weight: 500;">hrs</span></div>
+      {% set target_sl = profile.target_sleep_hours if profile else 7.5 %}
+      {% set sleep_pct = ((activity.sleep_hours / target_sl) * 100)|int %}
+      <div class="metric-sub">Target: {{ target_sl|format_decimal(1) }} hrs (Quality: {{ activity.sleep_quality or 3 }}/5)</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill bg-indigo" style="width: {{ [sleep_pct, 100]|min }}%;"></div>
+      </div>
+    {% else %}
+      <div class="metric-value" style="color: var(--text-muted);">-- <span style="font-size: 0.95rem; font-weight: 400;">hrs</span></div>
+      {% set target_sl = profile.target_sleep_hours if profile else 7.5 %}
+      <div class="metric-sub">Target: {{ target_sl|format_decimal(1) }} hrs &bull; <span style="color: var(--accent-cyan);">Awaiting today's log</span></div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill bg-indigo" style="width: 0%;"></div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Exercise -->
+  <div class="metric-card" id="metric-exercise-card">
+    <div class="metric-header">
+      <span>Active Exercise</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-amber)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    {% if has_today_activity %}
+      <div class="metric-value">{{ activity.exercise_minutes }} <span style="font-size: 1rem; font-weight: 500;">mins</span></div>
+      <div class="metric-sub">Type: {{ activity.exercise_type.title() }}</div>
+      {% set ex_pct = ((activity.exercise_minutes / 45.0) * 100)|int %}
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill bg-amber" style="width: {{ [ex_pct, 100]|min }}%;"></div>
+      </div>
+    {% else %}
+      <div class="metric-value" style="color: var(--text-muted);">-- <span style="font-size: 0.95rem; font-weight: 400;">mins</span></div>
+      <div class="metric-sub">Goal: 45 mins &bull; <span style="color: var(--accent-cyan);">Awaiting today's log</span></div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill bg-amber" style="width: 0%;"></div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- 3. PERSONALIZED RECOMMENDATIONS (Section 8, 9) -->
+<div class="grid-main-side" style="margin-bottom: 1.75rem;">
+  <div class="card" id="recommendation-focus-card">
+    <div class="card-header">
+      <span class="card-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Personalized Recommendations
+      </span>
+      <span class="badge badge-healthy">{{ recommendation.category.replace('_', ' ').upper() if recommendation else 'ACTIVE' }}</span>
+    </div>
+
+    {% if recommendation %}
+      <div style="margin-bottom: 1rem;">
+        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent-teal); font-weight: 700; letter-spacing: 0.05em;">Why this recommendation?</span>
+        <p style="font-size: 0.92rem; color: var(--text-primary); margin-top: 0.35rem; line-height: 1.5;">
+          {{ recommendation.explanation }}
+        </p>
+      </div>
+
+      {% if total_activity_count == 0 %}
+        <p style="font-size: 0.85rem; color: var(--text-muted); font-style: italic; margin-bottom: 0.85rem;">
+          Your recommendations will become more personalized as you build your activity history.
+        </p>
+      {% endif %}
+
+      <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+        <a href="{{ url_for('recommendations.index') }}" class="btn btn-primary btn-sm">View Full Nutrition & Movement Plan &rarr;</a>
+        <span style="font-size: 0.82rem; color: var(--text-muted);">
+          Confidence: <strong style="color: var(--accent-teal);">{{ (recommendation.confidence * 100)|int if recommendation.confidence else 85 }}%</strong>
+        </span>
+      </div>
+
+      <!-- Expandable Technical Details (Requirement 7) -->
+      <details style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem; font-size: 0.82rem; color: var(--text-secondary);">
+        <summary style="cursor: pointer; color: var(--accent-cyan); font-weight: 600;">Technical Details</summary>
+        <div style="margin-top: 0.6rem; display: flex; flex-direction: column; gap: 0.35rem; background: rgba(0,0,0,0.25); padding: 0.6rem 0.8rem; border-radius: var(--radius-sm);">
+          <div>Model Version: <strong>{{ recommendation.model_version }}</strong></div>
+          <div>Safety & Personalization Checks: <strong style="color: var(--accent-teal);">Passed</strong></div>
+          <div>Fallback Status: <strong>{{ recommendation.fallback_level }}</strong></div>
+          <div>System Engine Status: <strong style="color: var(--accent-teal);">{{ model_status }}</strong></div>
+        </div>
+      </details>
+    {% else %}
+      <p style="font-size: 0.9rem; color: var(--text-secondary);">Generating personalized recommendations...</p>
+    {% endif %}
+  </div>
+
+  <!-- 4. TODAY'S TASKS (Section 4 Hierarchy) -->
+  <div class="card" id="tasks-checklist-card">
+    <div class="card-header">
+      <span class="card-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Today's Tasks
+      </span>
+      <span style="font-size: 0.82rem; color: var(--text-muted);">
+        {{ tasks|selectattr('completed', 'equalto', true)|list|length }} of {{ tasks|length }} done
+      </span>
+    </div>
+
+    <div id="tasks-list">
+      {% for task in tasks %}
+        <div class="task-item {% if task.completed %}completed{% endif %}" id="task-row-{{ task.id }}">
+          <div class="task-left">
+            <form method="POST" action="{{ url_for('recommendations.toggle_task', task_id=task.id) }}" style="display: inline;">
+              <input type="checkbox" onchange="this.form.submit()" {% if task.completed %}checked{% endif %} style="width: 18px; height: 18px; accent-color: var(--accent-teal); cursor: pointer;" id="task-check-{{ task.id }}">
+            </form>
+            <div>
+              <div class="task-title" style="font-size: 0.9rem; font-weight: 600;">{{ task.title }}</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted);">{{ task.target_description }}</div>
+            </div>
+          </div>
+          <span class="badge badge-info" style="font-size: 0.7rem;">{{ task.category.upper() }}</span>
+        </div>
+      {% else %}
+        <p style="color: var(--text-secondary); font-size: 0.88rem; padding: 0.5rem 0;">
+          No daily tasks configured for today yet. Check back after establishing your baseline.
+        </p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- 5 & 6. PROGRESS TRENDS & RECENT ACTIVITY (Section 13) -->
+<div class="grid-main-side" style="margin-bottom: 1.75rem;">
+  <!-- Recent Activity Trajectory Chart -->
+  <div class="card" id="chart-card">
+    <div class="card-header">
+      <span class="card-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Recent Activity Trajectory
+      </span>
+      <a href="{{ url_for('progress.index') }}" class="btn btn-secondary btn-sm">Full Analytics &rarr;</a>
+    </div>
+
+    {% if recent_activities|length > 0 %}
+      <div style="height: 240px; position: relative;">
+        <canvas id="dashboardWeeklyChart"></canvas>
+      </div>
+    {% else %}
+      <!-- Intentional Empty State (Requirement 13) -->
+      <div style="height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; color: var(--text-muted);">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 0.6rem; opacity: 0.5;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <div style="font-size: 1rem; color: #fff; font-weight: 600; margin-bottom: 0.25rem;">Your progress will appear here after you log activity.</div>
+        <p style="font-size: 0.85rem; max-width: 320px; margin-bottom: 0.75rem;">Record your steps and workouts to unlock dynamic behavioral charts.</p>
+        <a href="{{ url_for('activity.index') }}" class="btn btn-primary btn-sm">+ Log Activity</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Progress Trends Box (Section 13) -->
+  <div class="card" id="trend-insight-card">
+    <div class="card-header">
+      <span class="card-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Progress Trends
+      </span>
+      <span class="badge {% if weekly_report and weekly_report.trend_direction == 'improving' %}badge-healthy{% elif weekly_report and weekly_report.trend_direction == 'declining' %}badge-warning{% else %}badge-info{% endif %}">
+        {{ weekly_report.trend_direction.upper() if (weekly_report and total_activity_count >= 3) else 'BASELINE' }}
+      </span>
+    </div>
+
+    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
+      {% if total_activity_count >= 3 and weekly_report and weekly_report.trend_summary %}
+        {{ weekly_report.trend_summary }}
+      {% else %}
+        Log at least 3 daily activities to generate automated progress trends and behavioral trajectory analysis.
+      {% endif %}
+    </p>
+
+    <div style="border-top: 1px solid var(--border-color); padding-top: 0.85rem;">
+      <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.4rem;">
+        <span style="color: var(--text-muted);">Weekly Step Average</span>
+        <strong style="color: #fff;">{{ weekly_report.avg_steps|int|format_number if (weekly_report and total_activity_count > 0) else '--' }}</strong>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.4rem;">
+        <span style="color: var(--text-muted);">Weekly Sleep Average</span>
+        <strong style="color: #fff;">{{ weekly_report.avg_sleep_hours|format_decimal(1) if (weekly_report and total_activity_count > 0) else '--' }} hrs</strong>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 0.82rem;">
+        <span style="color: var(--text-muted);">Exercise Consistency</span>
+        <strong style="color: #fff;">{{ weekly_report.exercise_consistency_pct|format_percent if (weekly_report and total_activity_count > 0) else '--' }}</strong>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{% if recent_activities|length > 0 %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const ctx = document.getElementById('dashboardWeeklyChart');
+  if (!ctx) return;
+
+  const labels = [{% for a in recent_activities %}"{{ a.date.strftime('%b %d') }}",{% endfor %}];
+  const steps = [{% for a in recent_activities %}{{ a.steps }},{% endfor %}];
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Steps',
+        data: steps,
+        backgroundColor: 'rgba(16, 185, 129, 0.65)',
+        borderColor: '#10b981',
+        borderWidth: 1.5,
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(15, 23, 42, 0.9)',
+          titleColor: '#fff',
+          bodyColor: '#10b981',
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+          borderWidth: 1,
+          callbacks: {
+            label: function(context) {
+              return context.parsed.y.toLocaleString() + ' steps';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255, 255, 255, 0.04)' },
+          ticks: { color: '#94a3b8' }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(255, 255, 255, 0.04)' },
+          ticks: {
+            color: '#94a3b8',
+            callback: function(value) {
+              return value.toLocaleString();
+            }
+          }
+        }
+      }
+    }
+  });
+});
+</script>
+{% endif %}
+{% endblock %}

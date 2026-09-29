@@ -1,0 +1,7 @@
+{
+  "model_name": "similarity_engine",
+  "version": "v1.0.0",
+  "algorithm": "NearestNeighbors (Cosine)",
+  "cohort_size": 5000,
+  "status": "production"
+}

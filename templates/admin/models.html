@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Model Registry & Governance — Vitalis AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2>Model Registry & Versioning Lifecycle</h2>
+      <p style="color: var(--text-secondary); font-size: 0.92rem;">
+        Track trained model candidate iterations, offline validation metrics, feature contracts, and version rollbacks.
+      </p>
+    </div>
+
+    <!-- Rollback Action (Section 11, 66) -->
+    <form method="POST" action="{{ url_for('admin.rollback') }}" onsubmit="return confirm('Rollback active production model to previous version?');">
+      <button type="submit" class="btn btn-secondary btn-sm" id="btn-admin-rollback">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Rollback to Previous Version
+      </button>
+    </form>
+  </div>
+
+  <!-- Admin Navigation Tabs -->
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+    <a href="{{ url_for('admin.index') }}" class="btn btn-sm btn-secondary">Overview</a>
+    <a href="{{ url_for('admin.models') }}" class="btn btn-sm btn-primary">Model Registry</a>
+    <a href="{{ url_for('admin.model_health') }}" class="btn btn-sm btn-secondary">11-Step ML Health</a>
+    <a href="{{ url_for('admin.errors') }}" class="btn btn-sm btn-secondary">Bug Diagnostics</a>
+    <a href="{{ url_for('admin.system_health') }}" class="btn btn-sm btn-secondary">System Health</a>
+  </div>
+
+  <!-- Active Production Model Details Card -->
+  {% if active_meta %}
+  <div class="card" style="margin-bottom: 2rem; border-color: rgba(16, 185, 129, 0.3);">
+    <div class="card-header">
+      <div>
+        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Current Production Model</span>
+        <h3 style="font-size: 1.4rem; color: #fff; margin-top: 0.2rem;">
+          {{ active_meta.algorithm }} ({{ active_meta.version }})
+        </h3>
+      </div>
+      <span class="badge badge-healthy">Production Active</span>
+    </div>
+
+    <div class="grid-4" style="margin-bottom: 1.25rem;">
+      <div style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Model Artifact</span>
+        <div style="font-size: 0.85rem; font-family: monospace; color: #fff; word-break: break-all; margin-top: 0.2rem;">{{ active_meta.artifact_path }}</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Preprocessor Pipeline</span>
+        <div style="font-size: 0.85rem; font-family: monospace; color: #fff; word-break: break-all; margin-top: 0.2rem;">{{ active_meta.preprocessor_path or 'Standard Pipeline' }}</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Registered Date</span>
+        <div style="font-size: 0.88rem; color: #fff; margin-top: 0.2rem;">{{ active_meta.registered_at or 'Latest' }}</div>
+      </div>
+      <div style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Rollback Target</span>
+        <div style="font-size: 0.88rem; color: var(--accent-amber); margin-top: 0.2rem;">{{ active_meta.rollback_version or 'Initial Version' }}</div>
+      </div>
+    </div>
+
+    <!-- Feature Schema Tags -->
+    <div>
+      <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 0.4rem;">Input Feature Schema ({{ active_meta.features|length }} Features):</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+        {% for feat in active_meta.features %}
+          <code style="background: rgba(255,255,255,0.05); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.78rem; border: 1px solid var(--border-color);">{{ feat }}</code>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Registry History Table -->
+  <div class="card" id="registry-table-card">
+    <div class="card-header">
+      <span class="card-title">Version History & Candidate Comparison</span>
+      <span style="font-size: 0.85rem; color: var(--text-muted);">{{ all_models|length }} models tracked</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table" id="models-table">
+        <thead>
+          <tr>
+            <th>Model Name</th>
+            <th>Version</th>
+            <th>Algorithm</th>
+            <th>Status</th>
+            <th>Test Acc</th>
+            <th>F1 Macro</th>
+            <th>CV F1</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in all_models %}
+          <tr>
+            <td><strong>{{ m.model_name }}</strong></td>
+            <td><code>{{ m.version }}</code></td>
+            <td>{{ m.algorithm }}</td>
+            <td>
+              {% if m.status == 'production' %}
+                <span class="badge badge-healthy">Production</span>
+              {% else %}
+                <span class="badge badge-info">Candidate</span>
+              {% endif %}
+            </td>
+            <td>{{ (m.metrics.accuracy * 100)|round(1) if m.metrics.accuracy else '--' }}%</td>
+            <td><strong style="color: var(--accent-teal);">{{ m.metrics.f1_macro or '--' }}</strong></td>
+            <td>{{ m.metrics.cv_f1_macro_mean or '--' }}</td>
+            <td>
+              {% if m.status != 'production' %}
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Available for deployment</span>
+              {% else %}
+                <span style="font-size: 0.8rem; color: var(--accent-teal); font-weight: 600;">Active</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2rem;">No version history records found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

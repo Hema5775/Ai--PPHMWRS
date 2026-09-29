@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{% block title %}Progress Trends — Vitalis AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto;">
+  <!-- Header & Range Switcher -->
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2>Progress Trends</h2>
+      <p style="color: var(--text-secondary); font-size: 0.92rem;">
+        Visual Analytics &mdash; Monitor multi-day behavioral consistency, wellness trajectories, and lifestyle habits over time.
+      </p>
+    </div>
+
+    <!-- Range Selector -->
+    <div style="display: flex; gap: 0.5rem; background: rgba(255, 255, 255, 0.05); padding: 0.35rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+      <a href="{{ url_for('progress.index', days=7) }}" class="btn btn-sm {% if days == 7 %}btn-primary{% else %}btn-secondary{% endif %}">7 Days</a>
+      <a href="{{ url_for('progress.index', days=14) }}" class="btn btn-sm {% if days == 14 %}btn-primary{% else %}btn-secondary{% endif %}">14 Days</a>
+      <a href="{{ url_for('progress.index', days=30) }}" class="btn btn-sm {% if days == 30 %}btn-primary{% else %}btn-secondary{% endif %}">30 Days</a>
+    </div>
+  </div>
+
+  {% if not has_data %}
+    <!-- Intentional Empty State (Requirement 11, 13) -->
+    <div class="card" style="text-align: center; padding: 4rem 2rem; max-width: 600px; margin: 2rem auto;">
+      <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(6, 182, 212, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      </div>
+      <h3 style="font-size: 1.4rem; color: #fff; margin-bottom: 0.5rem;">Your progress will appear here after you log activity.</h3>
+      <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem;">
+        No activity records were found for this {{ days }}-day window. Record what you did today to begin tracking your step volume, hydration, sleep, exercise, and wellness score trends.
+      </p>
+      <a href="{{ url_for('activity.index') }}" class="btn btn-primary" id="btn-empty-log-progress">+ Log Today's Activity</a>
+    </div>
+  {% else %}
+    <!-- 5 Comprehensive Chart.js Visualizations (Requirement 13) -->
+    <div class="grid-2" style="margin-bottom: 2rem;">
+      <!-- Chart 1: Steps & Daily Movement -->
+      <div class="card" id="chart-steps-card">
+        <div class="card-header">
+          <span class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Step Volume
+          </span>
+          <span class="badge badge-healthy">Steps</span>
+        </div>
+        <div style="height: 250px; position: relative;">
+          <canvas id="progressStepsChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 2: Wellness Score Trajectory -->
+      <div class="card" id="chart-score-card">
+        <div class="card-header">
+          <span class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Wellness Score
+          </span>
+          <span class="badge badge-info">0 &ndash; 100</span>
+        </div>
+        <div style="height: 250px; position: relative;">
+          <canvas id="progressScoreChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 3: Hydration Volume -->
+      <div class="card" id="chart-water-card">
+        <div class="card-header">
+          <span class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            Hydration
+          </span>
+          <span class="badge badge-info">Liters</span>
+        </div>
+        <div style="height: 250px; position: relative;">
+          <canvas id="progressWaterChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 4: Sleep Duration -->
+      <div class="card" id="chart-sleep-card">
+        <div class="card-header">
+          <span class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-indigo)" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            Sleep Duration
+          </span>
+          <span class="badge badge-info">Hours</span>
+        </div>
+        <div style="height: 250px; position: relative;">
+          <canvas id="progressSleepChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart 5: Exercise Duration Full Width -->
+    <div class="card" id="chart-exercise-card" style="margin-bottom: 2rem;">
+      <div class="card-header">
+        <span class="card-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-amber)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Exercise Duration
+        </span>
+        <span class="badge badge-warning">Minutes</span>
+      </div>
+      <div style="height: 250px; position: relative;">
+        <canvas id="progressExerciseChart"></canvas>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{% if has_data %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const payload = {{ chart_payload|tojson }};
+  const labels = payload.labels;
+
+  const chartTheme = {
+    gridColor: 'rgba(255, 255, 255, 0.05)',
+    tickColor: '#94a3b8',
+    tooltipBg: 'rgba(15, 23, 42, 0.95)',
+  };
+
+  // 1. Steps Chart
+  new Chart(document.getElementById('progressStepsChart'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Steps',
+        data: payload.steps,
+        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+        borderColor: '#10b981',
+        borderWidth: 1.5,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return ctx.parsed.y.toLocaleString() + ' steps'; }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: chartTheme.gridColor }, ticks: { color: chartTheme.tickColor } },
+        y: {
+          beginAtZero: true,
+          grid: { color: chartTheme.gridColor },
+          ticks: {
+            color: chartTheme.tickColor,
+            callback: function(v) { return v.toLocaleString(); }
+          }
+        }
+      }
+    }
+  });
+
+  // 2. Score Chart
+  new Chart(document.getElementById('progressScoreChart'), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Wellness Score',
+        data: payload.scores,
+        borderColor: '#06b6d4',
+        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+        tension: 0.35,
+        fill: true,
+        pointBackgroundColor: '#06b6d4',
+        pointRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: chartTheme.gridColor }, ticks: { color: chartTheme.tickColor } },
+        y: { min: 0, max: 100, grid: { color: chartTheme.gridColor }, ticks: { color: chartTheme.tickColor } }
+      }
+    }
+  });
+
+  // 3. Water Chart
+  new Chart(document.getElementById('progressWaterChart'), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Water (L)',
+        data: payload.water,
+        borderColor: '#38bdf8',
+        backgroundColor: 'rgba(56, 189, 248, 0.1)',
+        tension: 0.3,
+        fill: true,
+        pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return ctx.parsed.y + ' L'; }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: chartTheme.gridColor }, ticks: { color: chartTheme.tickColor } },
+        y: { beginAtZero: true, grid: { color: chartTheme.gridColor }, ticks: { color: chartTheme.tickColor } }
+      }
+    }
+  });
+
+  // 4. Sleep Chart
+  new Chart(document.getElementById('progressSleepChart'), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Sleep (Hours)',
+        data: payload.sleep,
+        borderColor: '#818cf8',
+        backgroundColor: 'rgba(129, 140, 248, 0.1)',
+        tension: 0.3,
+        fill: true,
+        pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return ctx.parsed.y + ' hrs'; }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: chartTheme.gridColor }, ticks: { color: chartTheme.tickColor } },
+        y: { min: 0, max: 12, grid: { color: chartTheme.gridColor }, ticks: { color: chartTheme.tickColor } }
+      }
+    }
+  });
+
+  // 5. Exercise Chart
+  new Chart(document.getElementById('progressExerciseChart'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Exercise (Minutes)',
+        data: payload.exercise,
+        backgroundColor: 'rgba(245, 158, 11, 0.65)',
+        borderColor: '#f59e0b',
+        borderWidth: 1.5,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return ctx.parsed.y + ' mins'; }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: chartTheme.gridColor }, ticks: { color: chartTheme.tickColor } },
+        y: { beginAtZero: true, grid: { color: chartTheme.gridColor }, ticks: { color: chartTheme.tickColor } }
+      }
+    }
+  });
+});
+</script>
+{% endif %}
+{% endblock %}

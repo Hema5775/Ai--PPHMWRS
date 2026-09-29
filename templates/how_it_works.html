@@ -1,0 +1,1126 @@
+{% extends "base.html" %}
+
+{% block title %}How Vitalis AI Works — AI & Insights{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/how_it_works.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="hiw-container">
+
+  <!-- ========================================================================
+       1. HERO SECTION (React Bits Scroll Reveal & Animated Visual Flow)
+       ======================================================================== -->
+  <header class="hiw-hero hiw-reveal">
+    <div class="hiw-hero-eyebrow">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+      </svg>
+      <span>YOUR PERSONAL WELLNESS COMPANION</span>
+    </div>
+
+    <h1 class="hiw-hero-title">
+      How <span class="hiw-gradient-text">Vitalis AI Works</span>
+    </h1>
+
+    <p class="hiw-hero-subtitle">
+      Vitalis AI turns your everyday wellness data into understandable insights, practical recommendations, and progress you can actually follow.
+    </p>
+
+    <!-- Visual System Flow: YOUR DATA -> INTELLIGENCE -> PERSONALIZATION -> GUIDANCE -> PROGRESS -->
+    <div class="hiw-hero-pipeline" aria-label="Vitalis AI Core Information Flow">
+      <div class="hiw-pipeline-nodes">
+        <div class="hiw-pipeline-node">
+          <div class="hiw-p-node-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+          </div>
+          <span class="hiw-p-node-label">Your Data</span>
+          <span class="hiw-p-node-sub">Daily Logs & Profile</span>
+        </div>
+
+        <div class="hiw-pipeline-arrow" aria-hidden="true">&rarr;</div>
+
+        <div class="hiw-pipeline-node">
+          <div class="hiw-p-node-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </div>
+          <span class="hiw-p-node-label">Intelligence</span>
+          <span class="hiw-p-node-sub">Patterns & Trends</span>
+        </div>
+
+        <div class="hiw-pipeline-arrow" aria-hidden="true">&rarr;</div>
+
+        <div class="hiw-pipeline-node">
+          <div class="hiw-p-node-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <span class="hiw-p-node-label">Personalization</span>
+          <span class="hiw-p-node-sub">Safety & Constraints</span>
+        </div>
+
+        <div class="hiw-pipeline-arrow" aria-hidden="true">&rarr;</div>
+
+        <div class="hiw-pipeline-node">
+          <div class="hiw-p-node-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <span class="hiw-p-node-label">Guidance</span>
+          <span class="hiw-p-node-sub">Daily Achievable Steps</span>
+        </div>
+
+        <div class="hiw-pipeline-arrow" aria-hidden="true">&rarr;</div>
+
+        <div class="hiw-pipeline-node">
+          <div class="hiw-p-node-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              <polyline points="17 6 23 6 23 12"/>
+            </svg>
+          </div>
+          <span class="hiw-p-node-label">Progress</span>
+          <span class="hiw-p-node-sub">Habit Consistency</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       2. DATA -> INSIGHT -> ACTION STORY (Connected Timeline)
+       ======================================================================== -->
+  <section class="hiw-section hiw-reveal">
+    <div class="hiw-section-header">
+      <span class="hiw-section-tag">User Journey</span>
+      <h2 class="hiw-section-title">From your data to your next step</h2>
+      <p class="hiw-section-desc">
+        A transparent, step-by-step progression connecting what you record to the practical guidance you receive.
+      </p>
+    </div>
+
+    <div class="hiw-story-timeline">
+      <!-- 01 TRACK -->
+      <div class="hiw-story-step hiw-interactive-card hiw-reveal hiw-stagger-1">
+        <div class="hiw-step-top">
+          <div class="hiw-step-badge">01</div>
+          <div class="hiw-step-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="hiw-step-name">Track</div>
+        <h3 class="hiw-step-title">Log Daily Inputs</h3>
+        <p class="hiw-step-desc">
+          Log everyday activities such as movement, sleep, hydration, and completed tasks.
+        </p>
+      </div>
+
+      <!-- 02 UNDERSTAND -->
+      <div class="hiw-story-step hiw-interactive-card hiw-reveal hiw-stagger-2">
+        <div class="hiw-step-top">
+          <div class="hiw-step-badge">02</div>
+          <div class="hiw-step-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+        </div>
+        <div class="hiw-step-name">Understand</div>
+        <h3 class="hiw-step-title">Identify Patterns</h3>
+        <p class="hiw-step-desc">
+          Vitalis looks at recent activity and profile information to identify meaningful patterns.
+        </p>
+      </div>
+
+      <!-- 03 PERSONALIZE -->
+      <div class="hiw-story-step hiw-interactive-card hiw-reveal hiw-stagger-3">
+        <div class="hiw-step-top">
+          <div class="hiw-step-badge">03</div>
+          <div class="hiw-step-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+        </div>
+        <div class="hiw-step-name">Personalize</div>
+        <h3 class="hiw-step-title">Contextualize</h3>
+        <p class="hiw-step-desc">
+          Your profile, goals, history, and available data are considered before guidance is presented.
+        </p>
+      </div>
+
+      <!-- 04 ACT -->
+      <div class="hiw-story-step hiw-interactive-card hiw-reveal hiw-stagger-4">
+        <div class="hiw-step-top">
+          <div class="hiw-step-badge">04</div>
+          <div class="hiw-step-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 11 12 14 22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+          </div>
+        </div>
+        <div class="hiw-step-name">Act</div>
+        <h3 class="hiw-step-title">Achieve Goals</h3>
+        <p class="hiw-step-desc">
+          Receive practical recommendations and small achievable actions you can follow.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       3. THE FIVE CORE VITALIS CAPABILITIES (Scroll Stack)
+       React Bits Scroll Stack + Spotlight Card + Depth Card
+       Keeps exact user-facing capability names and existing DOM IDs.
+       ======================================================================== -->
+  <section class="hiw-section hiw-stack-section">
+    <div class="hiw-section-header hiw-reveal">
+      <span class="hiw-section-tag">Core Capabilities</span>
+      <h2 class="hiw-section-title">The Five Pillars of Vitalis AI</h2>
+      <p class="hiw-section-desc">
+        Explore each core capability below as the cards stack smoothly into focus.
+      </p>
+    </div>
+
+    <!-- Quick Navigation Pills -->
+    <nav class="hiw-stack-nav hiw-reveal" aria-label="Jump to Vitalis capability">
+      <button type="button" class="hiw-stack-nav-btn is-active" data-target="info-recommendations" id="nav-btn-recommendations">
+        1. Recommendations
+      </button>
+      <button type="button" class="hiw-stack-nav-btn" data-target="info-wellness-score" id="nav-btn-score">
+        2. Wellness Score
+      </button>
+      <button type="button" class="hiw-stack-nav-btn" data-target="info-progress-trends" id="nav-btn-trends">
+        3. Progress Trends
+      </button>
+      <button type="button" class="hiw-stack-nav-btn" data-target="info-activity-insights" id="nav-btn-insights">
+        4. Activity Insights
+      </button>
+      <button type="button" class="hiw-stack-nav-btn" data-target="info-safety" id="nav-btn-safety">
+        5. Safety & Personalization
+      </button>
+    </nav>
+
+    <div class="hiw-stack-container" id="hiw-stack-wrapper">
+
+      <!-- 1. PERSONALIZED RECOMMENDATIONS -->
+      <article class="hiw-stack-card hiw-interactive-card hiw-depth-card hiw-reveal" id="info-recommendations" tabindex="0">
+        <div class="hiw-card-content">
+          <div class="hiw-card-header">
+            <div class="hiw-card-header-left">
+              <div class="hiw-card-icon-box hiw-icon-teal" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
+              <div class="hiw-card-title-group">
+                <h3>Personalized Recommendations</h3>
+                <p class="hiw-card-subtitle">Guidance shaped around your routine.</p>
+              </div>
+            </div>
+            <span class="hiw-card-badge hiw-badge-teal">Guidance</span>
+          </div>
+
+          <div class="hiw-card-grid">
+            <div class="hiw-card-col-text">
+              <p class="hiw-card-body-text">
+                Analyzes your biometric profile (age, height, weight, BMI), stated wellness objective, and recent activity history to generate tailored nutrition plans, daily exercise routines, and achievable micro-goals. Every recommendation provides traceable explainability factors so you always know why specific guidance was presented.
+              </p>
+              <div class="hiw-card-points">
+                <div class="hiw-card-point">
+                  <span class="hiw-point-check">&check;</span>
+                  <span>Calculates daily calorie pacing from biometric baselines (BMR/TDEE).</span>
+                </div>
+                <div class="hiw-card-point">
+                  <span class="hiw-point-check">&check;</span>
+                  <span>Generates achievable daily tasks with one-click progress checkoffs.</span>
+                </div>
+                <div class="hiw-card-point">
+                  <span class="hiw-point-check">&check;</span>
+                  <span>Includes explicit rationale explaining why each recommendation was chosen.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Animated Input Flow Visual -->
+            <div class="hiw-card-visual-box" aria-label="Recommendation input system diagram">
+              <div class="hiw-rec-flow">
+                <div class="hiw-inputs-pill-grid">
+                  <div class="hiw-input-chip is-active">Profile</div>
+                  <div class="hiw-input-chip is-active">Goals</div>
+                  <div class="hiw-input-chip is-active">Activity</div>
+                  <div class="hiw-input-chip is-active">Sleep</div>
+                  <div class="hiw-input-chip is-active">Hydration</div>
+                  <div class="hiw-input-chip is-active">Tasks</div>
+                </div>
+
+                <div class="hiw-stream-connector" aria-hidden="true">
+                  <div class="hiw-stream-line">
+                    <div class="hiw-stream-dot"></div>
+                  </div>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </div>
+
+                <div class="hiw-guidance-output">
+                  <div class="hiw-guidance-badge-icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="hiw-guidance-title">Personalized Guidance</div>
+                    <div class="hiw-guidance-sub">Context-aware routines & tailored micro-habits</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2. WELLNESS SCORE -->
+      <article class="hiw-stack-card hiw-interactive-card hiw-depth-card hiw-reveal" id="info-wellness-score" tabindex="0">
+        <div class="hiw-card-content">
+          <div class="hiw-card-header">
+            <div class="hiw-card-header-left">
+              <div class="hiw-card-icon-box hiw-icon-cyan" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
+              <div class="hiw-card-title-group">
+                <h3>Wellness Score</h3>
+                <p class="hiw-card-subtitle">A simple snapshot of your recent wellness habits.</p>
+              </div>
+            </div>
+            <span class="hiw-card-badge hiw-badge-cyan">0 &ndash; 100 Index</span>
+          </div>
+
+          <div class="hiw-card-grid">
+            <div class="hiw-card-col-text">
+              <p class="hiw-card-body-text">
+                A deterministic, transparent score built on 5 weighted behavioral dimensions: Activity (25%), Hydration (20%), Sleep (20%), Daily Tasks (20%), and 7-day Logging Consistency (15%). It reflects daily lifestyle momentum and habit consistency rather than clinical pathology.
+              </p>
+
+              <!-- What it means / What it is not -->
+              <div class="hiw-callout-pair">
+                <div class="hiw-callout-box meaning">
+                  <div class="hiw-callout-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    What it means
+                  </div>
+                  <div class="hiw-callout-text">
+                    A holistic reflection of consistent daily habits, movement, hydration balance, and rest routines.
+                  </div>
+                </div>
+
+                <div class="hiw-callout-box not-meaning">
+                  <div class="hiw-callout-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                    What it is not
+                  </div>
+                  <div class="hiw-callout-text">
+                    Not a clinical pathology metric, lab value indicator, or medical diagnostic diagnosis.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- React Bits Count Up & Radial Arc Visual -->
+            <div class="hiw-card-visual-box" aria-label="Wellness score interactive gauge and dimensions">
+              <div class="hiw-score-layout">
+                <div class="hiw-example-tag">Illustrative Example</div>
+
+                <div class="hiw-score-radial-wrap">
+                  <svg class="hiw-radial-svg" viewBox="0 0 140 140" aria-hidden="true">
+                    <circle class="hiw-radial-track" cx="70" cy="70" r="60" stroke-width="10" fill="none"/>
+                    <circle class="hiw-radial-val" id="hiw-radial-val" cx="70" cy="70" r="60" stroke-width="10" fill="none"/>
+                  </svg>
+                  <div class="hiw-radial-center">
+                    <span class="hiw-radial-num" id="hiw-score-num">0</span>
+                    <span class="hiw-radial-scale">/ 100</span>
+                  </div>
+                </div>
+
+                <!-- 5 Dimension Breakdown -->
+                <div class="hiw-dimensions-list">
+                  <div class="hiw-dim-row">
+                    <div class="hiw-dim-info"><span>Activity</span><span>25%</span></div>
+                    <div class="hiw-dim-track"><div class="hiw-dim-bar" data-pct="85"></div></div>
+                  </div>
+                  <div class="hiw-dim-row">
+                    <div class="hiw-dim-info"><span>Hydration</span><span>20%</span></div>
+                    <div class="hiw-dim-track"><div class="hiw-dim-bar" data-pct="75"></div></div>
+                  </div>
+                  <div class="hiw-dim-row">
+                    <div class="hiw-dim-info"><span>Sleep</span><span>20%</span></div>
+                    <div class="hiw-dim-track"><div class="hiw-dim-bar" data-pct="80"></div></div>
+                  </div>
+                  <div class="hiw-dim-row">
+                    <div class="hiw-dim-info"><span>Daily Tasks</span><span>20%</span></div>
+                    <div class="hiw-dim-track"><div class="hiw-dim-bar" data-pct="90"></div></div>
+                  </div>
+                  <div class="hiw-dim-row">
+                    <div class="hiw-dim-info"><span>7-day Logging Consistency</span><span>15%</span></div>
+                    <div class="hiw-dim-track"><div class="hiw-dim-bar" data-pct="100"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. PROGRESS TRENDS -->
+      <article class="hiw-stack-card hiw-interactive-card hiw-depth-card hiw-reveal" id="info-progress-trends" tabindex="0">
+        <div class="hiw-card-content">
+          <div class="hiw-card-header">
+            <div class="hiw-card-header-left">
+              <div class="hiw-card-icon-box hiw-icon-indigo" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                  <polyline points="17 6 23 6 23 12"/>
+                </svg>
+              </div>
+              <div class="hiw-card-title-group">
+                <h3>Progress Trends</h3>
+                <p class="hiw-card-subtitle">See how your habits change over time.</p>
+              </div>
+            </div>
+            <span class="hiw-card-badge hiw-badge-indigo">Longitudinal</span>
+          </div>
+
+          <div class="hiw-card-grid">
+            <div class="hiw-card-col-text">
+              <p class="hiw-card-body-text">
+                Evaluates your longitudinal activity records across 7-day, 14-day, and 30-day horizons. Looking across multiple time windows helps reveal whether activity, rest, and hydration patterns are improving, remaining stable, or changing.
+              </p>
+              <div class="hiw-card-points">
+                <div class="hiw-card-point">
+                  <span class="hiw-point-check">&check;</span>
+                  <span>Calculates directional velocity across rolling time horizons.</span>
+                </div>
+                <div class="hiw-card-point">
+                  <span class="hiw-point-check">&check;</span>
+                  <span>Filters single-day anomalies to preserve clear habit momentum.</span>
+                </div>
+                <div class="hiw-card-point">
+                  <span class="hiw-point-check">&check;</span>
+                  <span>Empowers lifestyle adjustment without clinical diagnostic claims.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Multi-Horizon SVG Graph -->
+            <div class="hiw-card-visual-box" aria-label="Interactive longitudinal trend visualization">
+              <div class="hiw-trend-header">
+                <div class="hiw-example-tag">Illustrative Trend</div>
+                <div class="hiw-time-tabs" role="tablist">
+                  <button type="button" class="hiw-tab-btn is-active" data-horizon="7d" role="tab" id="tab-7d" aria-label="7 day trend">7 Days</button>
+                  <button type="button" class="hiw-tab-btn" data-horizon="14d" role="tab" id="tab-14d" aria-label="14 day trend">14 Days</button>
+                  <button type="button" class="hiw-tab-btn" data-horizon="30d" role="tab" id="tab-30d" aria-label="30 day trend">30 Days</button>
+                </div>
+              </div>
+
+              <div class="hiw-graph-svg-wrap">
+                <svg class="hiw-graph-svg" viewBox="0 0 500 150" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.6"/>
+                      <stop offset="100%" stop-color="#6366f1" stop-opacity="0.0"/>
+                    </linearGradient>
+                  </defs>
+                  <g class="hiw-graph-grid">
+                    <line x1="30" y1="35" x2="470" y2="35"/>
+                    <line x1="30" y1="70" x2="470" y2="70"/>
+                    <line x1="30" y1="105" x2="470" y2="105"/>
+                    <line x1="30" y1="140" x2="470" y2="140"/>
+                  </g>
+                  <path id="hiw-trend-area" class="hiw-graph-area" d="M 30,110 Q 80,95 140,80 T 260,65 T 380,50 T 470,35 L 470,140 L 30,140 Z"/>
+                  <path id="hiw-trend-path" class="hiw-graph-path" d="M 30,110 Q 80,95 140,80 T 260,65 T 380,50 T 470,35"/>
+                  <g id="hiw-trend-pts" class="hiw-graph-pts">
+                    <circle cx="30" cy="110" r="4"/>
+                    <circle cx="140" cy="80" r="4"/>
+                    <circle cx="260" cy="65" r="4"/>
+                    <circle cx="380" cy="50" r="4"/>
+                    <circle cx="470" cy="35" r="4"/>
+                  </g>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4. ACTIVITY INSIGHTS -->
+      <article class="hiw-stack-card hiw-interactive-card hiw-depth-card hiw-reveal" id="info-activity-insights" tabindex="0">
+        <div class="hiw-card-content">
+          <div class="hiw-card-header">
+            <div class="hiw-card-header-left">
+              <div class="hiw-card-icon-box hiw-icon-amber" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="8"/>
+                </svg>
+              </div>
+              <div class="hiw-card-title-group">
+                <h3>Activity Insights</h3>
+                <p class="hiw-card-subtitle">Understand unusual or notable patterns in your activity.</p>
+              </div>
+            </div>
+            {% if availability and availability.history_available %}
+            <span class="hiw-card-badge hiw-badge-teal">Activity Data Available &bull; {{ availability.activity_count }} Logs</span>
+            {% else %}
+            <span class="hiw-card-badge hiw-badge-amber">Quality & Outliers</span>
+            {% endif %}
+          </div>
+
+          <div class="hiw-card-grid">
+            <div class="hiw-card-col-text">
+              <p class="hiw-card-body-text">
+                Evaluates daily logs to protect data quality. If an entry differs substantially from standard limits (such as a 60,000-step typo or extreme hydration entry), Vitalis can flag unusual entries or possible logging mistakes so they don't silently distort your insights.
+              </p>
+              {% if availability and availability.history_available %}
+              <div class="hiw-data-status-note">
+                <span style="color: var(--accent-teal); font-weight: 600;">&check; Activity data available:</span>
+                <span>Vitalis actively monitors your {{ availability.activity_count }} logged entries against baseline patterns.</span>
+                {% if availability.anomaly_count and availability.anomaly_count > 0 %}
+                <span style="color: var(--accent-amber);">({{ availability.anomaly_count }} entry flagged for confirmation).</span>
+                {% else %}
+                <span style="color: var(--text-muted);">(All current entries within expected ranges).</span>
+                {% endif %}
+              </div>
+              {% else %}
+              <div class="hiw-data-status-note">
+                <span style="color: var(--text-muted);">Start logging your daily activity to activate automated quality screening and outlier detection.</span>
+              </div>
+              {% endif %}
+              <div class="hiw-card-points">
+                <div class="hiw-card-point">
+                  <span class="hiw-point-check">&check;</span>
+                  <span>Unsupervised Isolation Forest algorithm detects statistical anomalies.</span>
+                </div>
+                <div class="hiw-card-point">
+                  <span class="hiw-point-check">&check;</span>
+                  <span>Protects recommendation engines from accidental logging distortion.</span>
+                </div>
+                <div class="hiw-card-point">
+                  <span class="hiw-point-check">&check;</span>
+                  <span>Preserves human review without asserting clinical pathology.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Outlier Flag Flow Visual -->
+            <div class="hiw-card-visual-box" aria-label="Activity outlier detection flowchart">
+              <div class="hiw-example-tag">
+                Illustrative Example &bull; Outlier Detection Flow
+              </div>
+              <div class="hiw-outlier-flow">
+                <!-- Activity Entry: 60,000 steps -->
+                <div class="hiw-flow-step-box">
+                  <div class="hiw-step-box-left">
+                    <span class="hiw-input-chip">Activity Entry</span>
+                    <span class="hiw-val-strong">60,000 Steps</span>
+                  </div>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">Illustrative Typo</span>
+                </div>
+
+                <div class="hiw-flow-arrow" aria-hidden="true">&darr;</div>
+
+                <!-- Unusual Value -->
+                <div class="hiw-flow-step-box">
+                  <div class="hiw-step-box-left">
+                    <span class="hiw-card-badge hiw-badge-amber" style="padding: 0.2rem 0.5rem;">Statistical Outlier</span>
+                    <span style="font-size: 0.85rem; color: #ffffff; font-weight: 600;">Unusual Value</span>
+                  </div>
+                  <span style="font-size: 0.72rem; color: var(--accent-amber);">P99.9 Threshold</span>
+                </div>
+
+                <div class="hiw-flow-arrow" aria-hidden="true">&darr;</div>
+
+                <!-- Review / Flag -->
+                <div class="hiw-flow-step-box hiw-flag-active">
+                  <div class="hiw-step-box-left">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent-amber);">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                      <line x1="12" y1="9" x2="12" y2="13"/>
+                      <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    <div>
+                      <div style="font-size: 0.88rem; font-weight: 700; color: #ffffff;">Review / Flag Notice</div>
+                      <div style="font-size: 0.75rem; color: var(--text-secondary);">Prompts user confirmation to keep models accurate</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5. SAFETY & PERSONALIZATION -->
+      <article class="hiw-stack-card hiw-interactive-card hiw-depth-card hiw-reveal" id="info-safety" tabindex="0">
+        <div class="hiw-card-content">
+          <div class="hiw-card-header">
+            <div class="hiw-card-header-left">
+              <div class="hiw-card-icon-box hiw-icon-teal" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <div class="hiw-card-title-group">
+                <h3>Safety & Personalization</h3>
+                <p class="hiw-card-subtitle">Your guidance is filtered through the information available to Vitalis.</p>
+              </div>
+            </div>
+            <span class="hiw-card-badge hiw-badge-teal">Constraint Layer</span>
+          </div>
+
+          <div class="hiw-card-grid">
+            <div class="hiw-card-col-text">
+              <p class="hiw-card-body-text">
+                Before any exercise or meal recommendation reaches you, it passes through strict safety constraint filters. If your profile notes knee sensitivity, high-impact jump routines are excluded. If you list allergies (e.g. peanuts or dairy), meal plans automatically eliminate contraindicated ingredients.
+              </p>
+              <div class="hiw-card-points">
+                <div class="hiw-card-point">
+                  <span class="hiw-point-check">&check;</span>
+                  <span>Enforces biometric upper/lower boundaries on daily caloric and exertion advice.</span>
+                </div>
+                <div class="hiw-card-point">
+                  <span class="hiw-point-check">&check;</span>
+                  <span>Eliminates allergen-containing food items at the inference filter stage.</span>
+                </div>
+                <div class="hiw-card-point">
+                  <span class="hiw-point-check">&check;</span>
+                  <span>Swaps high-impact activity options for low-impact alternatives when joint limitations exist.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Animated Safety Filter Diagram -->
+            <div class="hiw-card-visual-box" aria-label="Safety constraint filtering diagram">
+              <div class="hiw-safety-diagram">
+                <!-- Profile -->
+                <div class="hiw-diag-node" style="text-align: center;">
+                  <div class="hiw-diag-title">Profile Data</div>
+                  <div class="hiw-diag-text">Biometrics, Objective & Preferences</div>
+                </div>
+
+                <div style="text-align: center; color: var(--accent-teal); font-size: 0.85rem;" aria-hidden="true">&darr;</div>
+
+                <!-- 3 Supporting Nodes: Goals, Constraints, Data Quality -->
+                <div class="hiw-diag-row">
+                  <div class="hiw-diag-subnode">
+                    <div class="hiw-diag-title">Goals</div>
+                    <div class="hiw-diag-text">Shapes relevant guidance</div>
+                  </div>
+                  <div class="hiw-diag-subnode">
+                    <div class="hiw-diag-title">Constraints</div>
+                    <div class="hiw-diag-text">Prevents unsuitable suggestions</div>
+                  </div>
+                  <div class="hiw-diag-subnode">
+                    <div class="hiw-diag-title">Data Quality</div>
+                    <div class="hiw-diag-text">Flags unreliable entries</div>
+                  </div>
+                </div>
+
+                <div style="text-align: center; color: var(--accent-teal); font-size: 0.85rem;" aria-hidden="true">&darr;</div>
+
+                <!-- Personalization -->
+                <div class="hiw-diag-node" style="text-align: center; background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3);">
+                  <div class="hiw-diag-title">Personalization Filter</div>
+                  <div class="hiw-diag-text">Validates contraindications & habit pacing</div>
+                </div>
+
+                <div style="text-align: center; color: var(--accent-teal); font-size: 0.85rem;" aria-hidden="true">&darr;</div>
+
+                <!-- Guidance -->
+                <div class="hiw-diag-node" style="text-align: center; background: rgba(6, 182, 212, 0.08); border-color: rgba(6, 182, 212, 0.3);">
+                  <div class="hiw-diag-title" style="color: var(--accent-cyan);">Safe, Tailored Guidance</div>
+                  <div class="hiw-diag-text">Presented with explainability context</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       4. "BETTER INPUTS -> MORE USEFUL GUIDANCE" (Staggered Grid)
+       ======================================================================== -->
+  <section class="hiw-section hiw-reveal">
+    <div class="hiw-section-header">
+      <span class="hiw-section-tag">Quality In, Quality Out</span>
+      <h2 class="hiw-section-title">Better inputs &rarr; More useful guidance</h2>
+      <p class="hiw-section-desc">
+        Personalized AI works best when the signals you provide are accurate, consistent, and regularly reviewed.
+      </p>
+    </div>
+
+    <div class="hiw-grid-4">
+      <!-- PROFILE -->
+      <div class="hiw-feature-card hiw-interactive-card hiw-reveal hiw-stagger-1">
+        <div class="hiw-feature-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <h3 class="hiw-feature-title">Profile</h3>
+        <p class="hiw-feature-desc">
+          Tell Vitalis about yourself and your wellness objective.
+        </p>
+        {% if availability and availability.has_profile %}
+        <div class="hiw-card-substatus hiw-substatus-ready">
+          &check; Your profile is available to personalize guidance.
+        </div>
+        {% else %}
+        <div class="hiw-card-substatus hiw-substatus-pending">
+          Complete your profile to improve personalization.
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- TRACK -->
+      <div class="hiw-feature-card hiw-interactive-card hiw-reveal hiw-stagger-2">
+        <div class="hiw-feature-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <h3 class="hiw-feature-title">Track</h3>
+        <p class="hiw-feature-desc">
+          Keep your daily activity information reasonably consistent.
+        </p>
+        {% if availability and availability.history_available %}
+        <div class="hiw-card-substatus hiw-substatus-ready">
+          &check; Your activity history gives Vitalis information to work with.
+        </div>
+        {% else %}
+        <div class="hiw-card-substatus hiw-substatus-pending">
+          Start logging activity to build useful history.
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- REVIEW -->
+      <div class="hiw-feature-card hiw-interactive-card hiw-reveal hiw-stagger-3">
+        <div class="hiw-feature-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 14 14"/>
+          </svg>
+        </div>
+        <h3 class="hiw-feature-title">Review</h3>
+        <p class="hiw-feature-desc">
+          Review recommendations and progress rather than blindly following them.
+        </p>
+        {% if availability and (availability.has_recommendations or availability.has_scores) %}
+        <div class="hiw-card-substatus hiw-substatus-ready">
+          &check; Recommendations &amp; wellness scores active.
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- UPDATE -->
+      <div class="hiw-feature-card hiw-interactive-card hiw-reveal hiw-stagger-4">
+        <div class="hiw-feature-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+        </div>
+        <h3 class="hiw-feature-title">Update</h3>
+        <p class="hiw-feature-desc">
+          Keep your profile and goals current when they change.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       5. "STILL GETTING STARTED?" / DATA AVAILABILITY STATUS (Dynamic User State)
+       ======================================================================== -->
+  <section class="hiw-section hiw-reveal" id="data-availability-section">
+    {% if availability and availability.state == 'sufficient' %}
+    <div class="hiw-empty-state-banner hiw-state-sufficient">
+      <div>
+        <div class="hiw-badge-ready">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Data Ready
+        </div>
+        <h3 style="font-size: 1.45rem; font-weight: 700; color: #ffffff; margin-bottom: 0.6rem;">
+          Your data is ready
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin-bottom: 0.85rem;">
+          Vitalis has enough information to provide meaningful wellness insights from your current activity history.
+        </p>
+        <div class="hiw-availability-checklist">
+          <div class="hiw-check-item">
+            <span class="hiw-check-icon">&check;</span>
+            <span>Profile available</span>
+          </div>
+          <div class="hiw-check-item">
+            <span class="hiw-check-icon">&check;</span>
+            <span>Activity history available ({{ availability.activity_count }} days recorded)</span>
+          </div>
+          <div class="hiw-check-item">
+            <span class="hiw-check-icon">&check;</span>
+            <span>Progress history and wellness tracking active</span>
+          </div>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.55; margin-top: 0.85rem;">
+          Continue logging consistently to expand longitudinal trends and refine daily recommendations.
+        </p>
+      </div>
+
+      <div class="hiw-empty-state-visual hiw-visual-sufficient">
+        <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.5rem;">
+          Data Availability Status
+        </div>
+        <div style="font-size: 1.15rem; font-weight: 800; font-family: var(--font-heading); color: var(--accent-teal); margin-bottom: 0.4rem;">
+          YOUR DATA IS READY
+        </div>
+        <p style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.45;">
+          All core model pipelines have sufficient inputs to generate personalized recommendations, behavioral scoring, and multi-horizon trend views.
+        </p>
+      </div>
+    </div>
+
+    {% elif availability and availability.state == 'partial' %}
+    <div class="hiw-empty-state-banner hiw-state-partial">
+      <div>
+        <div class="hiw-badge-partial">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 14 14"/>
+          </svg>
+          In Progress
+        </div>
+        <h3 style="font-size: 1.45rem; font-weight: 700; color: #ffffff; margin-bottom: 0.6rem;">
+          You're getting started
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin-bottom: 0.85rem;">
+          Some insights are available, and your history is beginning to take shape.
+        </p>
+        <div class="hiw-availability-checklist">
+          {% if availability.has_profile %}
+          <div class="hiw-check-item">
+            <span class="hiw-check-icon">&check;</span>
+            <span>Profile available</span>
+          </div>
+          {% endif %}
+          <div class="hiw-check-item">
+            <span class="hiw-check-icon">&check;</span>
+            <span>Initial activity logged ({{ availability.activity_count }} {% if availability.activity_count == 1 %}day{% else %}days{% endif %})</span>
+          </div>
+          <div class="hiw-check-item hiw-check-pending">
+            <span class="hiw-pending-icon">&bull;</span>
+            <span>Log a few more days to unlock full 7-day consistency and multi-horizon trends</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hiw-empty-state-visual hiw-visual-partial">
+        <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.5rem;">
+          Data Availability Status
+        </div>
+        <div style="font-size: 1.15rem; font-weight: 800; font-family: var(--font-heading); color: var(--accent-amber); margin-bottom: 0.4rem;">
+          SOME INSIGHTS AVAILABLE
+        </div>
+        <p style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.45;">
+          Baseline guidance is already working. Adding 7 consecutive days of logs will activate longitudinal trend trajectories and weekly progress comparisons.
+        </p>
+      </div>
+    </div>
+
+    {% else %}
+    <!-- STATE 1 — NO DATA / COLD START -->
+    <div class="hiw-empty-state-banner">
+      <div>
+        <div class="hiw-badge-waiting">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          Graceful Cold-Start
+        </div>
+        <h3 style="font-size: 1.45rem; font-weight: 700; color: #ffffff; margin-bottom: 0.6rem;">
+          Still getting started?
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin-bottom: 0.85rem;">
+          Vitalis does not require a perfect history. Some insights become more useful as more activity is recorded.
+        </p>
+        <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.55;">
+          When there isn't enough information, Vitalis clearly communicates that more data is needed rather than implying that zero means nothing happened.
+        </p>
+      </div>
+
+      <div class="hiw-empty-state-visual">
+        <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.5rem;">
+          Data Availability Status
+        </div>
+        <div style="font-size: 1.15rem; font-weight: 800; font-family: var(--font-heading); color: var(--accent-cyan); margin-bottom: 0.4rem;">
+          NOT ENOUGH DATA YET
+        </div>
+        <p style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.45;">
+          Instead of misleading zeros (0 steps, 0 sleep, 0 hydration), Vitalis displays honest onboarding states that invite you to log your first day.
+        </p>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- ========================================================================
+       6. "HOW TO USE VITALIS EFFECTIVELY" (4 Numbered Cards)
+       ======================================================================== -->
+  <section class="hiw-section hiw-reveal">
+    <div class="hiw-section-header">
+      <span class="hiw-section-tag">Best Practices</span>
+      <h2 class="hiw-section-title">How to use Vitalis effectively</h2>
+      <p class="hiw-section-desc">
+        Four practical habits to unlock the most accurate and empowering wellness experience.
+      </p>
+    </div>
+
+    <div class="hiw-grid-4">
+      <div class="hiw-numbered-step hiw-interactive-card hiw-reveal hiw-stagger-1">
+        <div class="hiw-step-num-watermark">01</div>
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: 0.45rem;">
+          Complete your profile
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55;">
+          Accurate height, weight, age, and dietary preferences give recommendations a strong foundation.
+        </p>
+      </div>
+
+      <div class="hiw-numbered-step hiw-interactive-card hiw-reveal hiw-stagger-2">
+        <div class="hiw-step-num-watermark">02</div>
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: 0.45rem;">
+          Log consistently
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55;">
+          Even partial daily entries help models discern genuine behavioral rhythms from temporary breaks.
+        </p>
+      </div>
+
+      <div class="hiw-numbered-step hiw-interactive-card hiw-reveal hiw-stagger-3">
+        <div class="hiw-step-num-watermark">03</div>
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: 0.45rem;">
+          Review your recommendations
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55;">
+          Evaluate suggested goals with personal common sense rather than blindly following automated output.
+        </p>
+      </div>
+
+      <div class="hiw-numbered-step hiw-interactive-card hiw-reveal hiw-stagger-4">
+        <div class="hiw-step-num-watermark">04</div>
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: 0.45rem;">
+          Look for trends, not isolated numbers
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55;">
+          One unusual day doesn't necessarily define your progress. Use the 7-, 14-, and 30-day views to understand broader patterns.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       7. "DESIGNED TO FAIL SAFELY" (Automated Fallback Architecture)
+       ======================================================================== -->
+  <section class="hiw-section hiw-reveal">
+    <div class="hiw-fail-safe-banner">
+      <div class="hiw-fail-safe-grid">
+        <div>
+          <span class="hiw-section-tag">Reliability Engineering</span>
+          <h2 style="font-size: 1.6rem; font-weight: 700; color: #ffffff; margin-bottom: 0.75rem;">
+            Designed to fail safely
+          </h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.65; margin-bottom: 1rem;">
+            If an advanced recommendation path is unavailable or cannot confidently produce guidance, Vitalis can fall back to simpler validated logic rather than presenting unreliable output.
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.55;">
+            By prioritizing deterministic constraint safety over unverified predictions, the system preserves trust and continuous availability at all times.
+          </p>
+        </div>
+
+        <div class="hiw-fallback-pipeline-visual" aria-label="Automated safety fallback hierarchy">
+          <div class="hiw-fb-stage primary">
+            <span style="font-family: var(--font-heading); font-weight: 800; color: var(--accent-teal);">1</span>
+            <span>Primary Path &mdash; Active Production ML Model</span>
+          </div>
+          <div class="hiw-fb-connector" aria-hidden="true">&darr; If unavailable or out-of-distribution</div>
+          <div class="hiw-fb-stage level-2">
+            <span style="font-family: var(--font-heading); font-weight: 800; color: var(--accent-cyan);">2</span>
+            <span>Automated Rollback to Prior Validated ML Release Candidate</span>
+          </div>
+          <div class="hiw-fb-connector" aria-hidden="true">&darr; If degraded runtime environment</div>
+          <div class="hiw-fb-stage level-3">
+            <span style="font-family: var(--font-heading); font-weight: 800; color: var(--accent-amber);">3</span>
+            <span>Deterministic Rule-Based Engine (Constraint-driven inference)</span>
+          </div>
+          <div class="hiw-fb-connector" aria-hidden="true">&darr; Cold start baseline</div>
+          <div class="hiw-fb-stage level-4">
+            <span style="font-family: var(--font-heading); font-weight: 800; color: var(--accent-purple);">4</span>
+            <span>Safe Generic Baseline Guidance</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       8. TECHNICAL ARCHITECTURE PIPELINE ("Inside the Vitalis AI Pipeline")
+       Retains all technical content: Gradient Boosting, Isolation Forest,
+       Four-Tier Fallback Hierarchy, Explainability & Auditability.
+       Includes localized Three.js ShapeBlur accent mount.
+       ======================================================================== -->
+  <section class="hiw-section hiw-reveal">
+    <div class="hiw-tech-architecture">
+      <!-- Localized Three.js WebGL ShapeBlur Accent Mount (React Bits algorithm) -->
+      <div id="hiw-hero-shapeblur" class="hiw-shapeblur-accent-mount" aria-hidden="true"></div>
+
+      <div class="hiw-tech-header">
+        <span class="hiw-section-tag">System Internals</span>
+        <h2 style="font-size: 1.6rem; font-weight: 700; color: #ffffff; margin-bottom: 0.35rem;">
+          Inside the Vitalis AI Pipeline
+        </h2>
+        <p style="font-size: 0.92rem; color: var(--text-secondary);">
+          For technical users and reviewers &mdash; inspect the end-to-end processing pipeline below.
+        </p>
+      </div>
+
+      <div class="hiw-tech-pipeline-flow">
+        <!-- 7 Pipeline Stages Row -->
+        <div class="hiw-tech-nodes-row" role="region" aria-label="Technical Pipeline Stages">
+          <div class="hiw-tech-node-item is-active" data-node="user-data" tabindex="0">
+            <div class="hiw-t-node-title">User Data</div>
+          </div>
+          <div class="hiw-tech-node-item" data-node="profile-activity" tabindex="0">
+            <div class="hiw-t-node-title">Profile & Activity</div>
+          </div>
+          <div class="hiw-tech-node-item" data-node="personalization" tabindex="0">
+            <div class="hiw-t-node-title">Personalization</div>
+          </div>
+          <div class="hiw-tech-node-item" data-node="ml-processing" tabindex="0">
+            <div class="hiw-t-node-title">ML / Rules</div>
+          </div>
+          <div class="hiw-tech-node-item" data-node="safety-constraints" tabindex="0">
+            <div class="hiw-t-node-title">Safety Filter</div>
+          </div>
+          <div class="hiw-tech-node-item" data-node="guidance" tabindex="0">
+            <div class="hiw-t-node-title">Guidance</div>
+          </div>
+          <div class="hiw-tech-node-item" data-node="auditability" tabindex="0">
+            <div class="hiw-t-node-title">Auditability</div>
+          </div>
+        </div>
+
+        <!-- Dynamic Selected Stage Explainer -->
+        <div style="background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-sm); padding: 0.85rem 1.15rem;">
+          <span style="font-size: 0.75rem; font-weight: 700; color: var(--accent-teal); text-transform: uppercase; letter-spacing: 0.06em;">Active Stage Inspector:</span>
+          <p id="hiw-tech-selected-desc" style="font-size: 0.88rem; color: var(--text-primary); margin-top: 0.25rem;">
+            Tracks daily wellness data (movement, sleep, hydration, completed daily tasks) through standard logging.
+          </p>
+        </div>
+
+        <!-- Deep-Dive Architecture Drawer (Section 7 technical details preserved) -->
+        <div class="hiw-tech-details-drawer">
+          <div class="hiw-tech-details-grid">
+            <div>
+              <div class="hiw-tech-col-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Machine Learning Pipelines
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 0.85rem;">
+                Our recommendation architecture utilizes a validated gradient boosting pipeline trained on structured lifestyle cohorts. Unsupervised Isolation Forest algorithms monitor multi-dimensional activity vectors for outlier detection.
+              </p>
+              <div class="hiw-tech-col-title" style="margin-top: 1.25rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                Explainability & Auditability
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+                Every inference execution logs its input feature vectors, active model artifact hash, and confidence calibration scores to maintain complete algorithmic auditability.
+              </p>
+            </div>
+
+            <div>
+              <div class="hiw-tech-col-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                Four-Tier Fallback Hierarchy
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.65rem;">
+                To guarantee high availability, Vitalis AI implements automated fault tolerance:
+              </p>
+              <ul class="hiw-tech-tier-list">
+                <li class="hiw-tech-tier-item">
+                  <span class="hiw-tier-num">L1</span>
+                  <span>Active Production ML Model</span>
+                </li>
+                <li class="hiw-tech-tier-item">
+                  <span class="hiw-tier-num">L2</span>
+                  <span>Automated Rollback to Prior Validated ML Release Candidate</span>
+                </li>
+                <li class="hiw-tech-tier-item">
+                  <span class="hiw-tier-num">L3</span>
+                  <span>Deterministic Rule-Based Engine (Constraint-driven inference)</span>
+                </li>
+                <li class="hiw-tech-tier-item">
+                  <span class="hiw-tier-num">L4</span>
+                  <span>Safe Generic Baseline Guidance</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       9. HEALTH & CLINICAL DISCLAIMER CALLOUT
+       ======================================================================== -->
+  <section class="hiw-section hiw-reveal">
+    <div class="hiw-disclaimer-callout">
+      <div class="hiw-disclaimer-icon" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="8"/>
+        </svg>
+      </div>
+      <div class="hiw-disclaimer-content">
+        <h4>Health & Clinical Disclaimer</h4>
+        <p>
+          Vitalis AI is designed solely for personal wellness monitoring, habit formation, and lifestyle habit optimization. It does not provide medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for clinical concerns or acute medical symptoms.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/how_it_works.js') }}"></script>
+{% endblock %}

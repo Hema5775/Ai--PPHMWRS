@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}Today's Activity — Vitalis AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 1100px; margin: 0 auto;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2>Today's Activity</h2>
+      <p style="color: var(--text-secondary); font-size: 0.92rem;">
+        Enter what you actually did today. Your recorded activity updates your Wellness Score, refines personalized recommendations, and builds your wellness progress.
+      </p>
+    </div>
+    {% if today_activity %}
+      <span class="badge badge-healthy" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">
+        ✓ Today's Record Active &bull; Editing Enabled
+      </span>
+    {% endif %}
+  </div>
+
+  <!-- Anomaly Alert Banner (Activity Insights) -->
+  {% if today_activity and today_activity.is_anomaly %}
+  <div class="alert alert-warning" id="anomaly-detection-banner">
+    <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div>
+        <strong style="display: block; font-size: 0.95rem;">Activity Insights &bull; Data Quality Notice:</strong>
+        <span>{{ today_activity.anomaly_reason or 'Unusual activity values detected relative to your historical pattern.' }}</span>
+        <div style="font-size: 0.8rem; margin-top: 0.25rem; opacity: 0.85;">
+          Note: This is a data consistency indicator to prevent entry typos, not a medical diagnostic assessment.
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Activity Logging Form & Today's Summary -->
+  <div class="grid-main-side" style="margin-bottom: 2rem;">
+    <!-- Form Card -->
+    <div class="card" id="activity-log-card">
+      <div class="card-header">
+        <span class="card-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          {% if today_activity %}Edit Today's Activity{% else %}Log Today's Activity{% endif %}
+        </span>
+        <span class="badge badge-info">{{ today.strftime('%B %d, %Y') }}</span>
+      </div>
+
+      {% if today_activity %}
+      <div style="margin-bottom: 1.25rem; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-size: 0.88rem; color: #a7f3d0;">
+        You have already logged activity for today. Submitting will update your existing record and recalculate your wellness score.
+      </div>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('activity.index') }}" id="activity-log-form">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label" for="act-date">Date</label>
+            <input type="date" name="date" id="act-date" class="form-control" value="{{ today_activity.date.isoformat() if today_activity else today.isoformat() }}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="act-steps">Steps Walked</label>
+            <input type="number" name="steps" id="act-steps" class="form-control" placeholder="e.g. 8500" value="{{ today_activity.steps if today_activity else '' }}" min="0" max="100000" required>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label" for="act-water">Water Intake (Liters)</label>
+            <input type="number" step="0.1" name="water_liters" id="act-water" class="form-control" placeholder="e.g. 2.4" value="{{ today_activity.water_liters if today_activity else '' }}" min="0.0" max="12.0" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="act-sleep">Sleep Duration (Hours)</label>
+            <input type="number" step="0.1" name="sleep_hours" id="act-sleep" class="form-control" placeholder="e.g. 7.5" value="{{ today_activity.sleep_hours if today_activity else '' }}" min="0.0" max="24.0" required>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label" for="act-exercise">Exercise Duration (Minutes)</label>
+            <input type="number" name="exercise_minutes" id="act-exercise" class="form-control" placeholder="e.g. 35" value="{{ today_activity.exercise_minutes if today_activity else '' }}" min="0" max="720" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="act-type">Exercise Type</label>
+            <select name="exercise_type" id="act-type" class="form-select">
+              <option value="walking" {% if today_activity and today_activity.exercise_type == 'walking' %}selected{% endif %}>Walking / Strolling</option>
+              <option value="running" {% if today_activity and today_activity.exercise_type == 'running' %}selected{% endif %}>Running / Jogging</option>
+              <option value="strength" {% if today_activity and today_activity.exercise_type == 'strength' %}selected{% endif %}>Strength Training</option>
+              <option value="cycling" {% if today_activity and today_activity.exercise_type == 'cycling' %}selected{% endif %}>Cycling / Spin</option>
+              <option value="yoga" {% if today_activity and today_activity.exercise_type == 'yoga' %}selected{% endif %}>Yoga / Mobility</option>
+              <option value="hiit" {% if today_activity and today_activity.exercise_type == 'hiit' %}selected{% endif %}>HIIT / Aerobics</option>
+              <option value="other" {% if today_activity and today_activity.exercise_type == 'other' %}selected{% endif %}>Other Activity</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="act-quality">Sleep Quality (1 to 5)</label>
+            <select name="sleep_quality" id="act-quality" class="form-select">
+              <option value="5" {% if today_activity and today_activity.sleep_quality == 5 %}selected{% endif %}>5 - Excellent Rest</option>
+              <option value="4" {% if today_activity and today_activity.sleep_quality == 4 %}selected{% endif %}>4 - Good Rest</option>
+              <option value="3" {% if not today_activity or today_activity.sleep_quality == 3 %}selected{% endif %}>3 - Moderate Rest</option>
+              <option value="2" {% if today_activity and today_activity.sleep_quality == 2 %}selected{% endif %}>2 - Restless</option>
+              <option value="1" {% if today_activity and today_activity.sleep_quality == 1 %}selected{% endif %}>1 - Very Poor</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label" for="act-calories">Estimated Calories Burned (Optional)</label>
+            <input type="number" step="1" name="calories_burned" id="act-calories" class="form-control" placeholder="e.g. 2100" value="{{ today_activity.calories_burned|int if (today_activity and today_activity.calories_burned) else '' }}">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="act-mood">Energy / Mood</label>
+            <select name="mood" id="act-mood" class="form-select">
+              <option value="great" {% if today_activity and today_activity.mood == 'great' %}selected{% endif %}>Great & Energized</option>
+              <option value="good" {% if today_activity and today_activity.mood == 'good' or not today_activity %}selected{% endif %}>Good & Balanced</option>
+              <option value="neutral" {% if today_activity and today_activity.mood == 'neutral' %}selected{% endif %}>Neutral</option>
+              <option value="tired" {% if today_activity and today_activity.mood == 'tired' %}selected{% endif %}>Tired / Fatigued</option>
+              <option value="stressed" {% if today_activity and today_activity.mood == 'stressed' %}selected{% endif %}>Stressed / Tense</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="act-notes">Notes / Observations (Optional)</label>
+          <input type="text" name="notes" id="act-notes" class="form-control" placeholder="e.g. Felt energized after morning walk" value="{{ today_activity.notes if (today_activity and today_activity.notes) else '' }}">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;" id="btn-save-activity">
+          {% if today_activity %}Update Today's Activity{% else %}Save Today's Activity{% endif %}
+        </button>
+      </form>
+    </div>
+
+    <!-- Today's Progress Status Side Cards -->
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <div class="card">
+        <h4 style="font-size: 1rem; margin-bottom: 0.75rem; color: var(--accent-cyan);">Today's Progress Status</h4>
+        {% if today_activity %}
+          <div style="margin-bottom: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span>Movement</span>
+              <strong>{{ today_activity.steps|format_number }} / {{ profile.target_steps|format_number if profile else '8,000' }}</strong>
+            </div>
+            <div class="progress-bar-container">
+              {% set target_s = profile.target_steps if profile else 8000 %}
+              <div class="progress-bar-fill bg-teal" style="width: {{ [((today_activity.steps / target_s) * 100)|int, 100]|min }}%;"></div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span>Water</span>
+              <strong>{{ today_activity.water_liters|format_decimal(1) }} / {{ profile.target_water_liters|format_decimal(1) if profile else '2.5' }} L</strong>
+            </div>
+            <div class="progress-bar-container">
+              {% set target_w = profile.target_water_liters if profile else 2.5 %}
+              <div class="progress-bar-fill bg-cyan" style="width: {{ [((today_activity.water_liters / target_w) * 100)|int, 100]|min }}%;"></div>
+            </div>
+          </div>
+
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span>Sleep</span>
+              <strong>{{ today_activity.sleep_hours|format_decimal(1) }} / {{ profile.target_sleep_hours|format_decimal(1) if profile else '7.5' }} hrs</strong>
+            </div>
+            <div class="progress-bar-container">
+              {% set target_sl = profile.target_sleep_hours if profile else 7.5 %}
+              <div class="progress-bar-fill bg-indigo" style="width: {{ [((today_activity.sleep_hours / target_sl) * 100)|int, 100]|min }}%;"></div>
+            </div>
+          </div>
+        {% else %}
+          <p style="font-size: 0.88rem; color: var(--text-secondary);">
+            No activity recorded for today yet. Fill out the form to log what you did today.
+          </p>
+        {% endif %}
+      </div>
+
+      <div class="card" style="font-size: 0.85rem; color: var(--text-secondary);">
+        <strong style="color: #fff; display: block; margin-bottom: 0.4rem;">Activity Insights:</strong>
+        Our automated system verifies entry consistency and screens for unusual physiological patterns to maintain data quality for your personalized recommendations.
+      </div>
+    </div>
+  </div>
+
+  <!-- Historical Records Table (Section 4) -->
+  <div class="card" id="activity-history-card">
+    <div class="card-header">
+      <span class="card-title">Activity History</span>
+      <span style="font-size: 0.85rem; color: var(--text-muted);">
+        {% if history %}{{ history|length }} day{% if history|length != 1 %}s{% endif %} recorded{% else %}No entries{% endif %}
+      </span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table" id="activity-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Steps</th>
+            <th>Water</th>
+            <th>Sleep</th>
+            <th>Exercise</th>
+            <th>Mood</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for act in history %}
+          <tr>
+            <td><strong>{{ act.date.strftime('%b %d') }}</strong></td>
+            <td>{{ act.steps|format_number }}</td>
+            <td>{{ act.water_liters|format_decimal(1) }} L</td>
+            <td>{{ act.sleep_hours|format_decimal(1) }} h</td>
+            <td>{{ act.exercise_minutes }} min</td>
+            <td>
+              <span class="badge {% if act.mood in ['great', 'good'] %}badge-healthy{% elif act.mood == 'neutral' %}badge-info{% else %}badge-warning{% endif %}">
+                {{ act.mood.title() }}
+              </span>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+              <div style="font-size: 1.1rem; color: #fff; font-weight: 600; margin-bottom: 0.35rem;">No activity recorded yet.</div>
+              <div style="font-size: 0.9rem; color: var(--text-secondary);">Log your first day to start building your wellness history.</div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

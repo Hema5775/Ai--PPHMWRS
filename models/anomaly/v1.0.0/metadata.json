@@ -1,0 +1,14 @@
+{
+  "model_name": "anomaly_detector",
+  "version": "v1.0.0",
+  "algorithm": "IsolationForest",
+  "contamination": 0.03,
+  "features": [
+    "steps",
+    "water_liters",
+    "sleep_hours",
+    "exercise_minutes"
+  ],
+  "status": "production",
+  "description": "Behavioral outlier and data entry quality detection."
+}

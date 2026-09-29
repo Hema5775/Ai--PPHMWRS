@@ -1,0 +1,768 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In — Vitalis AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 440px; margin: 3rem auto;">
+  <div class="card" id="login-card">
+
+    <!-- View 1: Standard Login View -->
+    <div id="auth-view-standard" class="auth-view active">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div class="brand-icon" style="margin: 0 auto 1rem; width: 44px; height: 44px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <h2>Welcome Back</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Sign in to monitor your wellness metrics and AI guidance</p>
+      </div>
+
+      <!-- Social Login Buttons (Google, Apple, Phone) -->
+      <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+        <!-- Continue with Google Button -->
+        <a href="{{ url_for('auth.google_login') }}" class="btn-social-auth" id="btn-google-login">
+          <svg width="18" height="18" viewBox="0 0 24 24" style="flex-shrink: 0;">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span>Continue with Google</span>
+        </a>
+
+        <!-- Continue with Apple Button -->
+        <a href="{{ url_for('auth.apple_login') }}" class="btn-social-auth" id="btn-apple-login">
+          <svg width="18" height="18" viewBox="0 0 170 170" fill="#ffffff" style="flex-shrink: 0;">
+            <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.58-7.7-11.64-13.98-6.19-9.56-10.97-20.55-14.35-32.96-3.37-12.42-5.06-23.77-5.06-34.05 0-14.89 3.65-27.18 10.95-36.87 7.3-9.69 16.48-14.63 27.54-14.83 5.43 0 11.19 1.41 17.28 4.23 6.08 2.83 10.15 4.35 12.21 4.56 2.07-.21 6.36-1.78 12.89-4.71 6.52-2.93 12.01-4.29 16.47-4.07 12.4.65 22.38 5.16 29.93 13.53-10.87 6.63-16.19 15.66-15.98 27.07.22 8.91 3.64 16.36 10.27 22.34 6.63 5.98 14.56 9.4 23.8 10.27-2.61 7.6-5.87 15.33-9.78 23.18zM119.22 33.15c0-6.96 2.5-13.43 7.5-19.41 5-5.98 11.25-9.67 18.75-11.09.22 1.09.33 2.18.33 3.26 0 6.85-2.66 13.48-7.99 19.89-5.33 6.41-11.63 10.16-18.91 11.25-.1-.98-.2-2.31-.29-3.9z"/>
+          </svg>
+          <span>Continue with Apple</span>
+        </a>
+
+        <!-- Continue with Phone Button -->
+        <button type="button" class="btn-social-auth" id="btn-phone-login" onclick="VitalisPhoneAuth.showPhoneEntry()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; color: var(--accent-teal);">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <span>Continue with Phone</span>
+        </button>
+      </div>
+
+      <div style="display: flex; align-items: center; margin-bottom: 1.5rem; color: var(--text-muted); font-size: 0.85rem;">
+        <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+        <span style="padding: 0 0.85rem; color: var(--text-secondary); font-size: 0.85rem;">or</span>
+        <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+      </div>
+
+      <form method="POST" action="{{ url_for('auth.login') }}" id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email Address</label>
+          <input type="email" name="email" id="login-email" class="form-control" placeholder="name@example.com" value="{{ email or '' }}" required autofocus>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <div style="position: relative;">
+            <input type="password" name="password" id="login-password" class="form-control" placeholder="••••••••" required>
+            <button type="button" id="toggle-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem;" onclick="togglePasswordVisibility('login-password')">Show</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;" id="btn-submit-login">Sign In</button>
+      </form>
+
+      <!-- Demo Mode Quick-Fill Assistant -->
+      <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); text-align: center;">
+        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; font-weight: 700; display: block; margin-bottom: 0.75rem;">Instant Demo Credentials</span>
+        <div style="display: flex; gap: 0.6rem; justify-content: center;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="fillCredentials('demo@wellness.ai', 'DemoPass123!')" id="btn-fill-demo">Demo User</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="fillCredentials('admin@wellness.ai', 'AdminPass123!')" id="btn-fill-admin">Admin ML</button>
+        </div>
+      </div>
+
+      <p style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-secondary);">
+        New to Vitalis AI? <a href="{{ url_for('auth.register') }}" style="font-weight: 600;">Create an account</a>
+      </p>
+    </div>
+
+    <!-- View 2: Phone Number Entry View -->
+    <div id="auth-view-phone" class="auth-view" style="display: none;">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div class="brand-icon" style="margin: 0 auto 1rem; width: 44px; height: 44px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </div>
+        <h2>Welcome Back</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Sign in using your phone number</p>
+      </div>
+
+      <div id="phone-error-banner" class="alert alert-danger" style="display: none; margin-bottom: 1.25rem; font-size: 0.85rem;"></div>
+
+      <form id="phone-entry-form" onsubmit="VitalisPhoneAuth.handleSendOtp(event)">
+        <div class="form-group">
+          <label class="form-label" for="phone-number-input">Phone Number</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <select id="phone-country-code" class="form-control" style="width: 105px; flex-shrink: 0; padding-right: 0.5rem; font-weight: 500;" aria-label="Country Code">
+              <option value="+91" selected>🇮🇳 +91</option>
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+44">🇬🇧 +44</option>
+              <option value="+61">🇦🇺 +61</option>
+              <option value="+971">🇦🇪 +971</option>
+              <option value="+65">🇸🇬 +65</option>
+              <option value="+49">🇩🇪 +49</option>
+            </select>
+            <input type="tel" id="phone-number-input" class="form-control" placeholder="98765 43210" required autocomplete="tel-national" aria-label="Phone Number">
+          </div>
+          <span style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem; display: block;">We will send a 4-digit verification code via SMS</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btn-send-otp" style="width: 100%; margin-top: 0.5rem;">
+          <span>Send OTP</span>
+        </button>
+
+        <button type="button" class="btn btn-secondary" id="btn-back-to-login" style="width: 100%; margin-top: 0.75rem;" onclick="VitalisPhoneAuth.showStandardLogin()">
+          &larr; Back
+        </button>
+      </form>
+    </div>
+
+    <!-- View 3: OTP Verification View (With CodePen Adapted Animation) -->
+    <div id="auth-view-otp" class="auth-view" style="display: none;">
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <h2 id="otp-header-title">Verify Your Number</h2>
+        <p id="otp-header-subtitle" style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 0.25rem;">
+          Enter the code sent to <strong id="otp-masked-phone" style="color: var(--text-primary);">+91 •••• 42</strong>
+        </p>
+      </div>
+
+      <div id="otp-error-banner" class="alert alert-danger" style="display: none; margin-bottom: 1rem; font-size: 0.85rem;"></div>
+
+      <!-- OTP Animation & Input Stage (Adapted from CodePen Reference) -->
+      <div class="otp-stage" id="otp-stage">
+        <!-- 4 OTP Boxes Container -->
+        <div class="otp-row" id="otp-boxes-row">
+          <div class="otp-box" id="box-0" data-index="0">
+            <span class="otp-digit" id="digit-0"></span>
+          </div>
+          <div class="otp-box" id="box-1" data-index="1">
+            <span class="otp-digit" id="digit-1"></span>
+          </div>
+          <div class="otp-box" id="box-2" data-index="2">
+            <span class="otp-digit" id="digit-2"></span>
+          </div>
+          <div class="otp-box" id="box-3" data-index="3">
+            <span class="otp-digit" id="digit-3"></span>
+          </div>
+        </div>
+
+        <!-- Layered Digit Inputs for Keyboard, Mobile & Paste -->
+        <div class="otp-inputs-row" id="otp-inputs-row">
+          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input-field" id="otp-input-0" data-index="0" autocomplete="one-time-code" aria-label="OTP Digit 1">
+          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input-field" id="otp-input-1" data-index="1" aria-label="OTP Digit 2">
+          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input-field" id="otp-input-2" data-index="2" aria-label="OTP Digit 3">
+          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input-field" id="otp-input-3" data-index="3" aria-label="OTP Digit 4">
+        </div>
+
+        <!-- Progress Ring & Success Indicator (initially hidden) -->
+        <div class="loader-wrap" id="loader-wrap" style="display: none;">
+          <svg class="progress-ring-svg" width="96" height="96" viewBox="0 0 96 96">
+            <circle class="ring-bg" cx="48" cy="48" r="40" stroke-width="4" fill="none"/>
+            <circle class="ring-fg" id="ring-fg" cx="48" cy="48" r="40" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="251.33" stroke-dashoffset="251.33"/>
+          </svg>
+          <div class="loader-percent" id="loader-percent">0%</div>
+
+          <!-- Success Checkmark -->
+          <div class="success-wrap" id="success-wrap" style="display: none;">
+            <svg class="success-check-svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <circle class="success-circle-pulse" cx="24" cy="24" r="22" stroke="#10b981" stroke-width="2" fill="rgba(16, 185, 129, 0.12)"/>
+              <path class="success-check-path" d="M14 24.5L21 31.5L34 17.5" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions Area -->
+      <div id="otp-actions-container" style="margin-top: 1.25rem;">
+        <button type="button" class="btn btn-primary" id="btn-verify-otp" style="width: 100%;" onclick="VitalisPhoneAuth.handleVerifyOtp()">
+          <span>Verify OTP</span>
+        </button>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.85rem; font-size: 0.82rem;">
+          <button type="button" id="btn-resend-otp" style="background: none; border: none; color: var(--accent-cyan); cursor: pointer; padding: 0; font-size: 0.82rem;" onclick="VitalisPhoneAuth.handleResendOtp()">
+            Resend code
+          </button>
+          <span id="otp-timer-label" style="color: var(--text-muted); font-size: 0.8rem;"></span>
+        </div>
+
+        <div style="text-align: center; margin-top: 0.75rem;">
+          <button type="button" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 0.82rem;" onclick="VitalisPhoneAuth.showPhoneEntry()">
+            &larr; Change phone number
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function togglePasswordVisibility(fieldId) {
+  const f = document.getElementById(fieldId);
+  const btn = document.getElementById('toggle-password');
+  if (f.type === 'password') {
+    f.type = 'text';
+    btn.textContent = 'Hide';
+  } else {
+    f.type = 'password';
+    btn.textContent = 'Show';
+  }
+}
+
+function fillCredentials(email, pass) {
+  document.getElementById('login-email').value = email;
+  document.getElementById('login-password').value = pass;
+}
+
+/**
+ * Vitalis AI Phone & OTP Verification Controller
+ * Adapted directly from CodePen OTP Verify Animation source of truth:
+ * - fillDigits()
+ * - moveToCircle()
+ * - spinBoxes() with orbit and counter-rotation
+ * - verified state
+ * - runLoader() circular progress ring with requestAnimationFrame
+ * - showSuccess() pulse and checkmark animation
+ */
+const VitalisPhoneAuth = {
+  currentPhone: '',
+  timerInterval: null,
+  cooldownRemaining: 0,
+  isVerifying: false,
+
+  init() {
+    this.setupOtpInputEvents();
+  },
+
+  showStandardLogin() {
+    this.hideAllViews();
+    const standardView = document.getElementById('auth-view-standard');
+    if (standardView) {
+      standardView.style.display = 'block';
+      setTimeout(() => standardView.classList.add('fade-in'), 10);
+    }
+  },
+
+  showPhoneEntry() {
+    this.hideAllViews();
+    this.clearErrors();
+    const phoneView = document.getElementById('auth-view-phone');
+    if (phoneView) {
+      phoneView.style.display = 'block';
+      setTimeout(() => {
+        phoneView.classList.add('fade-in');
+        const phoneInput = document.getElementById('phone-number-input');
+        if (phoneInput) phoneInput.focus();
+      }, 10);
+    }
+  },
+
+  showOtpVerification(maskedPhone) {
+    this.hideAllViews();
+    this.clearErrors();
+    const otpView = document.getElementById('auth-view-otp');
+    if (otpView) {
+      otpView.style.display = 'block';
+      setTimeout(() => {
+        otpView.classList.add('fade-in');
+        this.resetOtpStage();
+        this.focusFirstInput();
+      }, 10);
+    }
+    const maskedEl = document.getElementById('otp-masked-phone');
+    if (maskedEl) maskedEl.textContent = maskedPhone;
+    this.startResendCooldown(30);
+  },
+
+  hideAllViews() {
+    ['auth-view-standard', 'auth-view-phone', 'auth-view-otp'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove('fade-in');
+        el.style.display = 'none';
+      }
+    });
+  },
+
+  clearErrors() {
+    ['phone-error-banner', 'otp-error-banner'].forEach(id => {
+      const banner = document.getElementById(id);
+      if (banner) {
+        banner.style.display = 'none';
+        banner.textContent = '';
+      }
+    });
+  },
+
+  showPhoneError(msg) {
+    const banner = document.getElementById('phone-error-banner');
+    if (banner) {
+      banner.textContent = msg;
+      banner.style.display = 'block';
+    }
+  },
+
+  showOtpError(msg) {
+    const banner = document.getElementById('otp-error-banner');
+    if (banner) {
+      banner.textContent = msg;
+      banner.style.display = 'block';
+    }
+  },
+
+  async handleSendOtp(e) {
+    if (e) e.preventDefault();
+    this.clearErrors();
+
+    const countryCode = document.getElementById('phone-country-code').value.trim();
+    const rawNumber = document.getElementById('phone-number-input').value.trim();
+
+    if (!rawNumber) {
+      this.showPhoneError('Please enter your phone number.');
+      return;
+    }
+
+    const fullPhone = countryCode + rawNumber.replace(/\D/g, '');
+    this.currentPhone = fullPhone;
+
+    const sendBtn = document.getElementById('btn-send-otp');
+    if (sendBtn) {
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<span>Sending code...</span>';
+    }
+
+    try {
+      const res = await fetch('/auth/phone/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: fullPhone })
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        this.showPhoneError(data.error || 'Failed to send verification code. Please try again.');
+        return;
+      }
+
+      this.showOtpVerification(data.masked_phone || fullPhone);
+
+      // In debug mode, log development code for testing convenience
+      if (data.dev_code) {
+        console.log('[Vitalis AI Dev] Verification code is:', data.dev_code);
+      }
+    } catch (err) {
+      this.showPhoneError('A network error occurred. Please try again.');
+    } finally {
+      if (sendBtn) {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<span>Send OTP</span>';
+      }
+    }
+  },
+
+  async handleResendOtp() {
+    if (this.cooldownRemaining > 0) return;
+    this.clearErrors();
+
+    const resendBtn = document.getElementById('btn-resend-otp');
+    if (resendBtn) resendBtn.textContent = 'Sending...';
+
+    try {
+      const res = await fetch('/auth/phone/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: this.currentPhone })
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        this.showOtpError(data.error || 'Failed to resend code.');
+        if (resendBtn) resendBtn.textContent = 'Resend code';
+        return;
+      }
+
+      this.startResendCooldown(30);
+      this.resetOtpStage();
+      this.focusFirstInput();
+    } catch (err) {
+      this.showOtpError('Network error while resending code.');
+      if (resendBtn) resendBtn.textContent = 'Resend code';
+    }
+  },
+
+  startResendCooldown(seconds) {
+    this.cooldownRemaining = seconds;
+    const resendBtn = document.getElementById('btn-resend-otp');
+    const timerLabel = document.getElementById('otp-timer-label');
+
+    if (this.timerInterval) clearInterval(this.timerInterval);
+
+    const updateLabel = () => {
+      if (this.cooldownRemaining <= 0) {
+        clearInterval(this.timerInterval);
+        if (resendBtn) {
+          resendBtn.style.pointerEvents = 'auto';
+          resendBtn.style.opacity = '1';
+          resendBtn.textContent = 'Resend code';
+        }
+        if (timerLabel) timerLabel.textContent = '';
+      } else {
+        if (resendBtn) {
+          resendBtn.style.pointerEvents = 'none';
+          resendBtn.style.opacity = '0.5';
+          resendBtn.textContent = 'Resend code';
+        }
+        if (timerLabel) timerLabel.textContent = `(${this.cooldownRemaining}s)`;
+        this.cooldownRemaining--;
+      }
+    };
+
+    updateLabel();
+    this.timerInterval = setInterval(updateLabel, 1000);
+  },
+
+  setupOtpInputEvents() {
+    const inputs = [0, 1, 2, 3].map(i => document.getElementById(`otp-input-${i}`));
+
+    inputs.forEach((input, index) => {
+      if (!input) return;
+
+      input.addEventListener('input', () => {
+        const val = input.value.replace(/\D/g, '');
+        if (val) {
+          const char = val[val.length - 1];
+          input.value = char;
+          this.setDigit(index, char);
+
+          // Auto-advance
+          if (index < 3) {
+            inputs[index + 1].focus();
+          } else {
+            // Auto submit when all 4 filled
+            const completeOtp = this.getEnteredOtp();
+            if (completeOtp.length === 4) {
+              this.handleVerifyOtp();
+            }
+          }
+        } else {
+          this.setDigit(index, '');
+        }
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace') {
+          if (!input.value && index > 0) {
+            inputs[index - 1].focus();
+            inputs[index - 1].value = '';
+            this.setDigit(index - 1, '');
+          } else {
+            input.value = '';
+            this.setDigit(index, '');
+          }
+        } else if (e.key === 'ArrowLeft' && index > 0) {
+          inputs[index - 1].focus();
+        } else if (e.key === 'ArrowRight' && index < 3) {
+          inputs[index + 1].focus();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          this.handleVerifyOtp();
+        }
+      });
+
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+        if (text) {
+          for (let i = 0; i < 4; i++) {
+            if (i < text.length) {
+              inputs[i].value = text[i];
+              this.setDigit(i, text[i]);
+            }
+          }
+          const nextIdx = Math.min(text.length, 3);
+          inputs[nextIdx].focus();
+          if (text.length >= 4) {
+            this.handleVerifyOtp();
+          }
+        }
+      });
+
+      input.addEventListener('focus', () => {
+        const box = document.getElementById(`box-${index}`);
+        if (box) box.classList.add('active');
+      });
+
+      input.addEventListener('blur', () => {
+        const box = document.getElementById(`box-${index}`);
+        if (box) box.classList.remove('active');
+      });
+    });
+  },
+
+  setDigit(index, char) {
+    const digitSpan = document.getElementById(`digit-${index}`);
+    const box = document.getElementById(`box-${index}`);
+    if (digitSpan) {
+      digitSpan.textContent = char;
+    }
+    if (box) {
+      if (char) {
+        box.classList.add('filled');
+      } else {
+        box.classList.remove('filled');
+      }
+    }
+  },
+
+  getEnteredOtp() {
+    let otp = '';
+    for (let i = 0; i < 4; i++) {
+      const el = document.getElementById(`otp-input-${i}`);
+      if (el && el.value) otp += el.value.trim();
+    }
+    return otp;
+  },
+
+  resetOtpStage() {
+    this.isVerifying = false;
+    const stage = document.getElementById('otp-stage');
+    const row = document.getElementById('otp-boxes-row');
+    const loaderWrap = document.getElementById('loader-wrap');
+    const successWrap = document.getElementById('success-wrap');
+    const percent = document.getElementById('loader-percent');
+    const ringFg = document.getElementById('ring-fg');
+    const verifyBtn = document.getElementById('btn-verify-otp');
+    const actions = document.getElementById('otp-actions-container');
+
+    if (stage) stage.classList.remove('animating');
+    if (row) {
+      row.className = 'otp-row';
+      row.style.transform = '';
+      row.style.opacity = '1';
+    }
+    if (loaderWrap) loaderWrap.style.display = 'none';
+    if (successWrap) successWrap.style.display = 'none';
+    if (percent) {
+      percent.textContent = '0%';
+      percent.style.display = 'block';
+    }
+    if (ringFg) {
+      ringFg.style.strokeDashoffset = '251.33';
+      ringFg.style.stroke = 'var(--accent-cyan)';
+    }
+    if (verifyBtn) {
+      verifyBtn.disabled = false;
+      verifyBtn.innerHTML = '<span>Verify OTP</span>';
+    }
+    if (actions) actions.style.display = 'block';
+
+    const headerTitle = document.getElementById('otp-header-title');
+    const headerSubtitle = document.getElementById('otp-header-subtitle');
+    if (headerTitle) {
+      headerTitle.textContent = 'Verify Your Number';
+      headerTitle.style.color = '';
+    }
+    if (headerSubtitle) {
+      headerSubtitle.innerHTML = `Enter the code sent to <strong id="otp-masked-phone" style="color: var(--text-primary);">${this.currentPhone ? VitalisPhoneAuth.maskPhone(this.currentPhone) : '+91 •••• 42'}</strong>`;
+    }
+
+    for (let i = 0; i < 4; i++) {
+      const input = document.getElementById(`otp-input-${i}`);
+      if (input) input.value = '';
+      this.setDigit(i, '');
+      const box = document.getElementById(`box-${i}`);
+      if (box) {
+        box.className = 'otp-box';
+        box.style.transform = '';
+      }
+    }
+  },
+
+  maskPhone(phone) {
+    if (!phone || phone.length < 6) return phone;
+    const prefix = phone.startsWith('+91') || phone.startsWith('+44') || phone.startsWith('+61') ? phone.slice(0, 3) : phone.slice(0, 2);
+    const rest = phone.slice(prefix.length);
+    if (rest.length >= 8) {
+      return `${prefix} ${rest.slice(0, 4)} •••• ${rest.slice(-2)}`;
+    }
+    return `${prefix} •••• ${rest.slice(-2)}`;
+  },
+
+  focusFirstInput() {
+    setTimeout(() => {
+      const first = document.getElementById('otp-input-0');
+      if (first) first.focus();
+    }, 50);
+  },
+
+  async handleVerifyOtp() {
+    if (this.isVerifying) return;
+    this.clearErrors();
+
+    const otp = this.getEnteredOtp();
+    if (otp.length !== 4) {
+      this.showOtpError('Please enter all 4 digits of the verification code.');
+      return;
+    }
+
+    this.isVerifying = true;
+    const verifyBtn = document.getElementById('btn-verify-otp');
+    if (verifyBtn) {
+      verifyBtn.disabled = true;
+      verifyBtn.innerHTML = '<span>Verifying...</span>';
+    }
+
+    try {
+      // Step 0: Real backend verification
+      const res = await fetch('/auth/phone/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: this.currentPhone, otp: otp })
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        this.isVerifying = false;
+        if (verifyBtn) {
+          verifyBtn.disabled = false;
+          verifyBtn.innerHTML = '<span>Verify OTP</span>';
+        }
+        this.showOtpError(data.error || 'That code is incorrect. Please try again.');
+
+        // Shake animation on error
+        const row = document.getElementById('otp-boxes-row');
+        if (row) {
+          row.classList.add('shake');
+          setTimeout(() => row.classList.remove('shake'), 450);
+        }
+        for (let i = 0; i < 4; i++) {
+          const input = document.getElementById(`otp-input-${i}`);
+          if (input) input.value = '';
+          this.setDigit(i, '');
+        }
+        this.focusFirstInput();
+        return;
+      }
+
+      // ONLY IF OTP IS VALID: Execute the CodePen Animation Sequence!
+      await this.runVerificationAnimation(data.redirect_url || '/dashboard');
+
+    } catch (err) {
+      this.isVerifying = false;
+      if (verifyBtn) {
+        verifyBtn.disabled = false;
+        verifyBtn.innerHTML = '<span>Verify OTP</span>';
+      }
+      this.showOtpError('A network error occurred. Please try again.');
+    }
+  },
+
+  runVerificationAnimation(redirectUrl) {
+    return new Promise((resolve) => {
+      const stage = document.getElementById('otp-stage');
+      const row = document.getElementById('otp-boxes-row');
+      const boxes = [0, 1, 2, 3].map(i => document.getElementById(`box-${i}`));
+      const loaderWrap = document.getElementById('loader-wrap');
+      const actions = document.getElementById('otp-actions-container');
+
+      if (stage) stage.classList.add('animating');
+      if (actions) actions.style.display = 'none';
+
+      // STEP 2: moveToCircle()
+      row.classList.add('in-circle');
+
+      // STEP 3: spinBoxes() with orbit and counter-rotation
+      setTimeout(() => {
+        row.classList.add('orbit');
+
+        // STEP 4: Transition to verified health state
+        setTimeout(() => {
+          boxes.forEach(b => b && b.classList.add('verified'));
+
+          // STEP 5: runLoader() -> Progress ring replaces OTP row
+          setTimeout(() => {
+            row.classList.add('vanish');
+            if (loaderWrap) loaderWrap.style.display = 'flex';
+
+            this.animateProgressRing(() => {
+              // STEP 6: showSuccess() -> 100% complete
+              this.showSuccess(redirectUrl, resolve);
+            });
+          }, 800);
+        }, 1100);
+      }, 550);
+    });
+  },
+
+  animateProgressRing(onComplete) {
+    const ringFg = document.getElementById('ring-fg');
+    const percentEl = document.getElementById('loader-percent');
+    const circumference = 251.33; // 2 * Math.PI * 40
+
+    const duration = 1200; // ms
+    const startTime = performance.now();
+
+    const cubicEase = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const frame = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = cubicEase(progress);
+
+      const offset = circumference * (1 - eased);
+      if (ringFg) ringFg.style.strokeDashoffset = offset;
+      if (percentEl) percentEl.textContent = Math.round(eased * 100) + '%';
+
+      if (progress < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        if (ringFg) ringFg.style.strokeDashoffset = '0';
+        if (percentEl) percentEl.textContent = '100%';
+        setTimeout(onComplete, 180);
+      }
+    };
+
+    requestAnimationFrame(frame);
+  },
+
+  showSuccess(redirectUrl, resolve) {
+    const ringFg = document.getElementById('ring-fg');
+    const percentEl = document.getElementById('loader-percent');
+    const successWrap = document.getElementById('success-wrap');
+    const headerTitle = document.getElementById('otp-header-title');
+    const headerSubtitle = document.getElementById('otp-header-subtitle');
+
+    if (percentEl) percentEl.style.display = 'none';
+    if (ringFg) ringFg.style.stroke = '#10b981';
+    if (successWrap) successWrap.style.display = 'flex';
+
+    if (headerTitle) {
+      headerTitle.textContent = 'Verified';
+      headerTitle.style.color = '#10b981';
+    }
+    if (headerSubtitle) {
+      headerSubtitle.textContent = 'Your phone number has been confirmed';
+    }
+
+    setTimeout(() => {
+      resolve();
+      window.location.href = redirectUrl;
+    }, 700);
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  VitalisPhoneAuth.init();
+});
+</script>
+{% endblock %}

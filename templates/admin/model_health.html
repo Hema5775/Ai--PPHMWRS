@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}11-Step ML Health & Drift Audit — Vitalis AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2>Automated 11-Step ML Health & Drift Auditor</h2>
+      <p style="color: var(--text-secondary); font-size: 0.92rem;">
+        Self-validating runtime integrity monitor detecting corrupted models, schema mismatches, output NaNs, and data drift.
+      </p>
+    </div>
+    <span class="badge {% if health.status == 'HEALTHY' %}badge-healthy{% elif health.status == 'WARNING' %}badge-warning{% else %}badge-danger{% endif %}" style="font-size: 0.9rem; padding: 0.4rem 0.9rem;">
+      Status: {{ health.status }}
+    </span>
+  </div>
+
+  <!-- Admin Navigation Tabs -->
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+    <a href="{{ url_for('admin.index') }}" class="btn btn-sm btn-secondary">Overview</a>
+    <a href="{{ url_for('admin.models') }}" class="btn btn-sm btn-secondary">Model Registry</a>
+    <a href="{{ url_for('admin.model_health') }}" class="btn btn-sm btn-primary">11-Step ML Health</a>
+    <a href="{{ url_for('admin.errors') }}" class="btn btn-sm btn-secondary">Bug Diagnostics</a>
+    <a href="{{ url_for('admin.system_health') }}" class="btn btn-sm btn-secondary">System Health</a>
+  </div>
+
+  <!-- 11 Health Verification Checks Grid (Section 12) -->
+  <div class="card" style="margin-bottom: 2rem;" id="health-checks-card">
+    <div class="card-header">
+      <span class="card-title">Automated Verification Protocol (11 Checks)</span>
+      <span style="font-size: 0.85rem; color: var(--text-muted);">
+        Audited Model: <strong>{{ health.model_name }} ({{ health.algorithm }})</strong>
+      </span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+      {% for chk_key, chk in health.checks.items() %}
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            {% if chk.passed %}
+              <div style="width: 24px; height: 24px; border-radius: 50%; background: rgba(16, 185, 129, 0.2); color: var(--accent-teal); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">✓</div>
+            {% else %}
+              <div style="width: 24px; height: 24px; border-radius: 50%; background: rgba(244, 63, 94, 0.2); color: var(--accent-rose); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">✕</div>
+            {% endif %}
+            <div>
+              <strong style="color: #fff; font-size: 0.92rem; text-transform: capitalize;">
+                {{ chk_key.replace('_', ' ') }}
+              </strong>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.1rem;">
+                {% if chk.detail %}{{ chk.detail }}{% endif %}
+                {% if chk.prediction %}Output: <code>{{ chk.prediction }}</code>{% endif %}
+                {% if chk.expected_count %}Schema match: {{ chk.model_feature_count }}/{{ chk.expected_count }} features{% endif %}
+                {% if chk.classes %}Classes: {{ chk.classes|join(', ') }}{% endif %}
+              </div>
+            </div>
+          </div>
+          <span class="badge {% if chk.passed %}badge-healthy{% else %}badge-danger{% endif %}">
+            {{ 'PASSED' if chk.passed else 'FAILED' }}
+          </span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Data Drift Monitoring (Section 15) -->
+  <div class="card" id="drift-monitoring-card">
+    <div class="card-header">
+      <span class="card-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Data Drift & Population Shift Monitor
+      </span>
+      <span class="badge {% if drift.drift_detected %}badge-warning{% else %}badge-healthy{% endif %}">
+        Drift: {{ drift.status }}
+      </span>
+    </div>
+
+    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+      {{ drift.message }}
+    </p>
+
+    {% if drift.feature_drift %}
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Baseline Mean</th>
+              <th>Recent Mean</th>
+              <th>Normalized Shift</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for col, stats in drift.feature_drift.items() %}
+            <tr>
+              <td><code>{{ col }}</code></td>
+              <td>{{ stats.baseline_mean }}</td>
+              <td>{{ stats.recent_mean }}</td>
+              <td>{{ stats.std_shift }} &sigma;</td>
+              <td>
+                {% if stats.is_drifted %}
+                  <span class="badge badge-warning">Drift Alert</span>
+                {% else %}
+                  <span class="badge badge-healthy">Normal</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

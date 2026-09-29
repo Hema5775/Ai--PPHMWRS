@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Weekly Progress Report — Vitalis AI{% endblock %}
+
+{% block extra_head %}
+<style>
+@media print {
+  .navbar, .btn, .disclaimer-banner { display: none !important; }
+  .card { box-shadow: none !important; border: 1px solid #ddd !important; color: #000 !important; background: #fff !important; }
+  body { background: #fff !important; color: #000 !important; }
+  h1, h2, h3, h4, strong { color: #000 !important; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 960px; margin: 0 auto;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2>Weekly Behavioral & Wellness Report</h2>
+      <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 0.2rem;">
+        Period: {{ report.week_start.strftime('%B %d, %Y') }} &ndash; {{ report.week_end.strftime('%B %d, %Y') }}
+      </p>
+      <!-- Logged Days Period Indicator (Requirement 15) -->
+      {% if logged_days_count < 7 %}
+        <div style="margin-top: 0.4rem; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--accent-cyan); background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.25); padding: 0.25rem 0.65rem; border-radius: var(--radius-sm);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Your report is based on {{ logged_days_count }} logged day{% if logged_days_count != 1 %}s{% endif %}.
+        </div>
+      {% else %}
+        <div style="margin-top: 0.4rem; display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--accent-teal); background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); padding: 0.25rem 0.65rem; border-radius: var(--radius-sm);">
+          ✓ Complete 7-day longitudinal cycle evaluated.
+        </div>
+      {% endif %}
+    </div>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()" id="btn-print-report">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Print / Save PDF
+    </button>
+  </div>
+
+  <!-- Weekly Trend Hero Card (Section 13, 15) -->
+  <div class="card" style="margin-bottom: 2rem; border-color: rgba(6, 182, 212, 0.3); background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(99, 102, 241, 0.08));" id="weekly-hero-card">
+    <div class="card-header" style="margin-bottom: 0.5rem;">
+      <span class="card-title" style="color: var(--accent-cyan);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Progress Trends &bull; Longitudinal Trend Assessment
+      </span>
+      <span class="badge {% if report.trend_direction == 'improving' %}badge-healthy{% elif report.trend_direction == 'declining' %}badge-warning{% else %}badge-info{% endif %}" style="font-size: 0.85rem; padding: 0.35rem 0.85rem;">
+        {{ report.trend_direction.upper() }}
+      </span>
+    </div>
+
+    <p style="font-size: 1rem; color: #fff; line-height: 1.55; margin-bottom: 1rem;">
+      {{ report.trend_summary }}
+    </p>
+
+    <div style="font-size: 0.85rem; color: var(--text-secondary); border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+      <strong>Recommendations Summary:</strong> {{ report.recommendations_summary }}
+    </div>
+  </div>
+
+  <!-- Aggregated Metric Telemetry Tiles -->
+  <div class="grid-4" style="margin-bottom: 2rem;">
+    <div class="card" style="text-align: center; padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Avg Daily Steps</span>
+      <div style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: #fff; margin-top: 0.2rem;">
+        {{ report.avg_steps|int|format_number }}
+      </div>
+    </div>
+
+    <div class="card" style="text-align: center; padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Avg Sleep Duration</span>
+      <div style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: #fff; margin-top: 0.2rem;">
+        {{ report.avg_sleep_hours|format_decimal(1) }} <span style="font-size: 0.9rem;">hrs</span>
+      </div>
+    </div>
+
+    <div class="card" style="text-align: center; padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Avg Daily Water</span>
+      <div style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: #fff; margin-top: 0.2rem;">
+        {{ report.avg_water_liters|format_decimal(1) }} <span style="font-size: 0.9rem;">L</span>
+      </div>
+    </div>
+
+    <div class="card" style="text-align: center; padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Avg Wellness Score</span>
+      <div style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: var(--accent-teal); margin-top: 0.2rem;">
+        {{ report.avg_wellness_score|int }} <span style="font-size: 0.9rem; color: var(--text-muted);">/100</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Achievements and Focus Areas -->
+  <div class="grid-2" style="margin-bottom: 2rem;">
+    <!-- Achievements -->
+    <div class="card" id="achievements-card">
+      <div class="card-header">
+        <span class="card-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+          Weekly Achievements
+        </span>
+      </div>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem;">
+        {% for ach in report.get_achievements() %}
+          <li style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.92rem; color: #fff; background: rgba(16, 185, 129, 0.06); padding: 0.6rem 0.9rem; border-radius: var(--radius-sm); border: 1px solid rgba(16, 185, 129, 0.2);">
+            <span style="color: var(--accent-teal); font-weight: bold;">✓</span>
+            {{ ach }}
+          </li>
+        {% else %}
+          <li style="color: var(--text-muted); font-size: 0.9rem;">Log activity regularly to unlock weekly achievements.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Areas to Focus On -->
+    <div class="card" id="focus-areas-card">
+      <div class="card-header">
+        <span class="card-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-amber)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Priority Focus for Upcoming Week
+        </span>
+      </div>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem;">
+        {% for foc in report.get_focus_areas() %}
+          <li style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.92rem; color: #fff; background: rgba(245, 158, 11, 0.06); padding: 0.6rem 0.9rem; border-radius: var(--radius-sm); border: 1px solid rgba(245, 158, 11, 0.2);">
+            <span style="color: var(--accent-amber); font-weight: bold;">&bull;</span>
+            {{ foc }}
+          </li>
+        {% else %}
+          <li style="color: var(--text-muted); font-size: 0.9rem;">No major lifestyle deficits identified. Maintain current habits!</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

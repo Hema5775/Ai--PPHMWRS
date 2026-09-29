@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}System Bug Diagnostics — Vitalis AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2>Automated Bug Diagnostics & Incident Tracking</h2>
+      <p style="color: var(--text-secondary); font-size: 0.92rem;">
+        Centralized error telemetry assigning traceable ERROR-IDs to exceptions while shielding users from stack traces.
+      </p>
+    </div>
+  </div>
+
+  <!-- Admin Navigation Tabs -->
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+    <a href="{{ url_for('admin.index') }}" class="btn btn-sm btn-secondary">Overview</a>
+    <a href="{{ url_for('admin.models') }}" class="btn btn-sm btn-secondary">Model Registry</a>
+    <a href="{{ url_for('admin.model_health') }}" class="btn btn-sm btn-secondary">11-Step ML Health</a>
+    <a href="{{ url_for('admin.errors') }}" class="btn btn-sm btn-primary">Bug Diagnostics</a>
+    <a href="{{ url_for('admin.system_health') }}" class="btn btn-sm btn-secondary">System Health</a>
+  </div>
+
+  <!-- Category Filter Chips -->
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+    <a href="{{ url_for('admin.errors') }}" class="btn btn-sm {% if not current_category %}btn-primary{% else %}btn-secondary{% endif %}">All Categories</a>
+    <a href="{{ url_for('admin.errors', category='ML') }}" class="btn btn-sm {% if current_category == 'ML' %}btn-primary{% else %}btn-secondary{% endif %}">ML Pipeline</a>
+    <a href="{{ url_for('admin.errors', category='DATABASE') }}" class="btn btn-sm {% if current_category == 'DATABASE' %}btn-primary{% else %}btn-secondary{% endif %}">Database</a>
+    <a href="{{ url_for('admin.errors', category='BACKEND') }}" class="btn btn-sm {% if current_category == 'BACKEND' %}btn-primary{% else %}btn-secondary{% endif %}">Backend Core</a>
+    <a href="{{ url_for('admin.errors', category='VALIDATION') }}" class="btn btn-sm {% if current_category == 'VALIDATION' %}btn-primary{% else %}btn-secondary{% endif %}">Validation</a>
+    <a href="{{ url_for('admin.errors', category='AUTHENTICATION') }}" class="btn btn-sm {% if current_category == 'AUTHENTICATION' %}btn-primary{% else %}btn-secondary{% endif %}">Auth</a>
+  </div>
+
+  <!-- Error Incident Logs Table -->
+  <div class="card" id="errors-table-card">
+    <div class="card-header">
+      <span class="card-title">Recorded System Incidents</span>
+      <span style="font-size: 0.85rem; color: var(--text-muted);">{{ errors.total }} total recorded</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table" id="errors-table">
+        <thead>
+          <tr>
+            <th>Incident ID</th>
+            <th>Timestamp</th>
+            <th>Category</th>
+            <th>Module</th>
+            <th>Severity</th>
+            <th>Status</th>
+            <th>Internal Message</th>
+            <th>Safe User Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for err in errors.items %}
+          <tr>
+            <td><code style="color: var(--accent-rose); font-weight: bold;">{{ err.error_id }}</code></td>
+            <td>{{ err.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td><span class="badge badge-info">{{ err.category }}</span></td>
+            <td><code>{{ err.module }}</code></td>
+            <td>
+              {% if err.severity == 'CRITICAL' %}
+                <span class="badge badge-danger">Critical</span>
+              {% elif err.severity == 'ERROR' %}
+                <span class="badge badge-danger">Error</span>
+              {% else %}
+                <span class="badge badge-warning">Warning</span>
+              {% endif %}
+            </td>
+            <td>
+              <span class="badge {% if err.status == 'OPEN' %}badge-warning{% else %}badge-healthy{% endif %}">{{ err.status }}</span>
+            </td>
+            <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ err.message }}">
+              {{ err.message }}
+            </td>
+            <td style="font-size: 0.8rem; color: var(--text-secondary); max-width: 200px;">
+              {{ err.safe_user_message }}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="8" style="text-align: center; color: var(--accent-teal); padding: 2.5rem;">
+              ✓ No system incidents logged. All modules reporting nominal operations.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

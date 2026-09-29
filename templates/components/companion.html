@@ -1,0 +1,146 @@
+{#
+  Global Vitalis AI Health Companion Floating Launcher & Assistant Panel
+  - Available on all authenticated pages
+  - Vector SVG health robot companion with idle breathing and interactive hover
+  - Compact glassmorphism assistant chat panel grounded in real health data
+#}
+{% if g.user %}
+<aside id="vitalis-companion-root" 
+       data-endpoint="{{ request.endpoint or '' }}" 
+       aria-label="Vitalis AI Health Companion">
+  <!-- Floating Robot Launcher & ShapeBlur Interaction Wrapper -->
+  <div id="vitalis-companion-launcher-wrapper" class="vitalis-companion-launcher-wrapper" role="button" tabindex="0" aria-label="Open Vitalis AI Health Companion">
+    <!-- Localized Three.js WebGL ShapeBlur Canvas Mount (React Bits algorithm) -->
+    <div id="vitalis-shapeblur-mount" class="vitalis-shapeblur-mount" aria-hidden="true" style="pointer-events: none;"></div>
+
+    <button type="button" 
+            id="vitalis-companion-launcher" 
+            class="vitalis-companion-launcher" 
+            aria-label="Open Vitalis AI Health Companion" 
+            aria-expanded="false" 
+            aria-controls="vitalis-companion-panel"
+            title="Chat with Vitalis Health Companion"
+            onclick="if (window.VitalisCompanion) { window.VitalisCompanion.toggle(); }">
+      <div class="companion-avatar-icon" aria-hidden="true">
+        <svg width="44" height="44" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="vitalis-bot-body" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#06b6d4"/>
+              <stop offset="45%" stop-color="#0d9488"/>
+              <stop offset="100%" stop-color="#6366f1"/>
+            </linearGradient>
+            <linearGradient id="vitalis-bot-visor" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#090d16"/>
+              <stop offset="100%" stop-color="#0f172a"/>
+            </linearGradient>
+            <radialGradient id="vitalis-beacon-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#67e8f9"/>
+              <stop offset="60%" stop-color="#10b981"/>
+              <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.3"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Antenna & Beacon -->
+          <path d="M32 15 V7" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round" class="bot-antenna-stalk"/>
+          <circle cx="32" cy="6" r="3.5" fill="url(#vitalis-beacon-glow)" class="bot-beacon-orb"/>
+          <circle cx="32" cy="6" r="5.5" stroke="#38bdf8" stroke-width="1" fill="none" opacity="0.6" class="bot-beacon-ping"/>
+
+          <!-- Ears / Acoustic Sensors -->
+          <rect x="8" y="27" width="5" height="11" rx="2.5" fill="#6366f1" opacity="0.9" class="bot-ear-left"/>
+          <rect x="51" y="27" width="5" height="11" rx="2.5" fill="#6366f1" opacity="0.9" class="bot-ear-right"/>
+
+          <!-- Robot Body Capsule -->
+          <rect x="12" y="14" width="40" height="36" rx="18" fill="url(#vitalis-bot-body)" class="bot-chassis"/>
+          <!-- Soft Top Highlight -->
+          <path d="M19 18 Q32 15 45 18" stroke="rgba(255,255,255,0.4)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+          <!-- Dark Visor Display -->
+          <rect x="16" y="22" width="32" height="20" rx="9" fill="url(#vitalis-bot-visor)" stroke="rgba(6, 182, 212, 0.45)" stroke-width="1.2" class="bot-visor"/>
+
+          <!-- Friendly Glowing Cyan Eyes -->
+          <ellipse cx="24" cy="30" rx="3.2" ry="4.2" fill="#38bdf8" class="bot-eye bot-eye-left"/>
+          <ellipse cx="40" cy="30" rx="3.2" ry="4.2" fill="#38bdf8" class="bot-eye bot-eye-right"/>
+          <circle cx="25" cy="28.5" r="1.1" fill="#ffffff"/>
+          <circle cx="41" cy="28.5" r="1.1" fill="#ffffff"/>
+
+          <!-- Miniature Vitalis ECG Heartbeat Waveform -->
+          <path d="M23 37 h3 l1.5 -3.5 l2.5 7 l2 -4.5 l1.5 1 h4" stroke="#10b981" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none" class="bot-pulse-line"/>
+        </svg>
+      </div>
+      <span class="companion-status-indicator" aria-hidden="true" title="Online &amp; Active"></span>
+    </button>
+  </div>
+
+  <!-- Floating Assistant Chat Panel -->
+  <div id="vitalis-companion-panel" 
+       class="vitalis-companion-panel" 
+       role="dialog" 
+       aria-labelledby="companion-title" 
+       aria-modal="false" 
+       aria-hidden="true">
+    <!-- Header -->
+    <div class="companion-panel-header">
+      <div class="companion-header-brand">
+        <div class="companion-mini-avatar" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 64 64" fill="none">
+            <rect x="12" y="14" width="40" height="36" rx="18" fill="url(#vitalis-bot-body)"/>
+            <rect x="16" y="22" width="32" height="20" rx="9" fill="#090d16"/>
+            <ellipse cx="24" cy="30" rx="3" ry="4" fill="#38bdf8"/>
+            <ellipse cx="40" cy="30" rx="3" ry="4" fill="#38bdf8"/>
+            <path d="M24 37 h3 l1.5 -3 l2 6 l2 -4 h3.5" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <h3 id="companion-title" class="companion-header-title">Vitalis Companion</h3>
+          <span class="companion-header-subtitle">
+            <span class="status-dot" aria-hidden="true"></span> Active &bull; Grounded Wellness AI
+          </span>
+        </div>
+      </div>
+      <div class="companion-header-actions">
+        <button type="button" class="companion-control-btn" id="btn-minimize-companion" aria-label="Minimize Companion" title="Minimize">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button type="button" class="companion-control-btn" id="btn-close-companion" aria-label="Close Vitalis AI Health Companion" title="Close">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Context Awareness Banner -->
+    <div class="companion-context-pill" id="companion-context-banner">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      <span id="companion-context-text">Loading context...</span>
+    </div>
+
+    <!-- Messages Stream -->
+    <div class="companion-messages" id="companion-messages-container" role="log" aria-live="polite">
+      <div class="chat-bubble chat-assistant">
+        Hello {{ g.user.name.split(' ')[0] }}! 👋 I'm your Vitalis Health Companion, connected to your logged health records. How can I help optimize your wellness today?
+      </div>
+    </div>
+
+    <!-- Quick Prompt Chips -->
+    <div class="companion-chips" id="companion-chips-container">
+      <button type="button" class="companion-chip" onclick="VitalisCompanion.sendPrompt('Why did my score change?')">Why did score change?</button>
+      <button type="button" class="companion-chip" onclick="VitalisCompanion.sendPrompt('What should I focus on today?')">Today's priorities</button>
+      <button type="button" class="companion-chip" onclick="VitalisCompanion.sendPrompt('What was my average sleep this week?')">Average sleep</button>
+      <button type="button" class="companion-chip" onclick="VitalisCompanion.sendPrompt('Show my dietary guidance')">Diet guidance</button>
+    </div>
+
+    <!-- Input Bar -->
+    <form id="companion-chat-form" class="companion-input-bar" onsubmit="VitalisCompanion.handleSubmit(event)">
+      <input type="text" 
+             id="companion-chat-input" 
+             class="companion-input" 
+             placeholder="Ask about your score, activities, habits..." 
+             autocomplete="off" 
+             aria-label="Ask Vitalis Health Companion" 
+             required>
+      <button type="submit" class="companion-send-btn" id="btn-companion-send" aria-label="Send message to Companion">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </form>
+  </div>
+</aside>
+{% endif %}
